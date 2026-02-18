@@ -1,6 +1,9 @@
 import express, {type Request, type Response} from 'express';
 import {join as join_path} from 'path';
 
+import {get_ticket} from "./lib/ticket.js";
+import {get_all_events, get_event} from "./lib/event.js";
+
 const app = express();
 const port = 80;
 
@@ -16,5 +19,27 @@ const serve_file = (filename: string) =>
 
 app.get('/', serve_file('index.html'));
 app.get('/index.js', serve_file('index.js'));
+
+app.get('/validate/:ticket_id', (req, res) => {
+    const {ticket_id} = req.params;
+    const ticket = get_ticket(ticket_id);
+    if (ticket === null) {
+        // Handle ticket not found
+    } else {
+        // Respond with ticket information page
+    }
+});
+
+app.get('/api/events', (req, res) => res.json(get_all_events()));
+
+app.get('/api/book/:event_id', (req, res) => {
+    const {event_id} = req.params;
+    const event = get_event(event_id);
+    if (event === null) {
+        // Handle event not found
+    } else {
+        // Create new ticket and respond with ticket_id
+    }
+});
 
 app.listen(port, () => console.log('Listening on port ' + port));
