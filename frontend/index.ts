@@ -1,0 +1,1 @@
+console.log('This should show up in the console on the main page');
