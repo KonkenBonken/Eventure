@@ -36,7 +36,7 @@ export type ProbingHashtable<K, V> = {
  * @param key the key
  * @returns key
  */
-export const hash_id: HashFunction<number> = key => key;
+export const hash_id: HashFunction<string> = key => Number(key);
 
 /**
  * Create an empty probing hash table
