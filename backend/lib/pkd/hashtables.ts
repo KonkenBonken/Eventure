@@ -28,16 +28,6 @@ export type ProbingHashtable<K, V> = {
     entries: number // number of elements
 };
 
-// Add implementation
-
-/**
- * The identity function as an auxiliary hash function
- * Do not use except for learning about hash tables
- * @param key the key
- * @returns key
- */
-export const hash_id: HashFunction<string> = key => Number(key);
-
 /**
  * Create an empty probing hash table
  * @template K the type of keys

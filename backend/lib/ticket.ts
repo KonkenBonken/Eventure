@@ -1,14 +1,13 @@
-import {type ProbingHashtable} from './pkd/hashtables.js';
+import {ph_empty} from './pkd/hashtables.js';
 import {type EventId} from './event.js';
-
-export type TicketId = string;
+import {hash_function, type TicketId} from "./generate_ids.js";
 
 export interface Ticket {
     event_id: EventId,
     ticket_id: TicketId
 }
 
-const tickets: ProbingHashtable<TicketId, Ticket>;
+const tickets = ph_empty<TicketId, Ticket>(100, hash_function);
 
 export function get_ticket(ticket_id: TicketId): Ticket | null {
 }
