@@ -1,14 +1,15 @@
 import {type ProbingHashtable} from './pkd/hashtables.js';
 import { ph_empty,  ph_lookup, ph_insert } from './pkd/hashtables.js';
-import { hash_function } from './generate_ids.js';
+import {type EventId, hash_function} from './generate_ids.js';
 
-export type EventId = string;
+// A string representing a ISO timestamp
+type Timestamp = string;
 
 export interface Event {
     event_id: EventId;
     title: string;
     description: string;
-    timestamp: string;
+    timestamp: Timestamp;
     price: number;
 }
 
@@ -22,23 +23,17 @@ export function get_all_events(): Array<Event> {
     const eventsArray: Array<Event> = [];
 
     for (let index = 0; index < 100; index++) {
-        
         const pos_entry = events.values[index];
 
-
-        //check its not an ampty or deleted spot
+        //check its not an empty or deleted spot
         if (pos_entry !== undefined && pos_entry !== null) {
-        eventsArray.push(pos_entry);
+            eventsArray.push(pos_entry);
         }
-
-        
     }
-
     return eventsArray;
 }
 
-
-//Gets event record if Id is found in hashtable events, else returns null
+//Gets event record if found in hashtable events, else returns null
 export function get_event(event_id: EventId): Event | null {
     const found_event = ph_lookup(events, event_id)
     if (found_event === undefined) {
@@ -48,36 +43,35 @@ export function get_event(event_id: EventId): Event | null {
     }
 }
 
-//GTurns the JSOM string back to a date 
+//Turns a ISO date string to a Date
 export function get_date(Event: Event): Date {
     return new Date(Event.timestamp);
-
-
 }
+
 //hardcoded examples
 const event_ex1: Event = {
     event_id: "123456",
     title: "Hot chocochug",
-    description: "Drink a liter of hot chocolate challange, hot chocolate provided",
+    description: "Drink a liter of hot chocolate challenge, hot chocolate provided",
     timestamp: new Date(2026, 1, 25).toJSON(),
     price: 40,
 }
 const event_ex2: Event = {
-    event_id: "123",
+    event_id: "789abc",
     title: "Bee hive building",
     description: "Come build some beehives for spring!",
     timestamp: new Date(2026, 3, 20).toJSON(),
     price: 10,
 }
 const event_ex3: Event = {
-    event_id: "456",
+    event_id: "defghi",
     title: "Beverage ball",
     description: "Dance around in outfits inspired by your favorite drink!",
     timestamp: new Date(2026, 2, 3).toJSON(),
     price: 150,
 }
 //add examples to events hashtable
-ph_insert(events, "123456", event_ex1);
-ph_insert(events, "123", event_ex2);
-ph_insert(events, "456", event_ex3);
+ph_insert(events, event_ex1.event_id, event_ex1);
+ph_insert(events, event_ex2.event_id, event_ex2);
+ph_insert(events, event_ex3.event_id, event_ex3);
 

@@ -1,6 +1,8 @@
 import { ph_lookup } from "./pkd/hashtables.js";
 import { tickets, Ticket } from "./ticket.js";
-import type { EventId } from "./event.js";
+
+/** An event id consists of a six character long string consisting of characters a-z and 0-9 */
+export type EventId = string;
 
 /** A ticket id consists of a six character long string consisting of characters a-z and 0-9 */
 export type TicketId = string;

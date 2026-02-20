@@ -1,6 +1,5 @@
 import {ph_empty, ph_insert, ph_lookup} from './pkd/hashtables.js';
-import {type EventId} from './event.js';
-import {hash_function, generate_new_ticket_id, type TicketId} from "./generate_ids.js";
+import {hash_function, generate_new_ticket_id, type TicketId, type EventId} from "./generate_ids.js";
 
 export interface Ticket {
     event_id: EventId,
