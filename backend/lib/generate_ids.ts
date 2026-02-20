@@ -1,5 +1,6 @@
 import { ph_lookup } from "./pkd/hashtables.js";
 import { tickets, Ticket } from "./ticket.js";
+import type { EventId } from "./event.js";
 
 /** A ticket id consists of a six character long string consisting of characters a-z and 0-9 */
 export type TicketId = string;
@@ -17,6 +18,6 @@ export function generate_new_ticket_id(): TicketId {
     return generate_new_ticket_id();
 }
 
-export function hash_function(k: TicketId): number {
+export function hash_function(k: TicketId | EventId): number {
     return parseInt(k, 36);
 }
