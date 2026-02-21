@@ -3,6 +3,7 @@ import {join as join_path} from 'path';
 
 import {get_ticket, make_ticket} from "./lib/ticket.js";
 import {get_all_events, get_event} from "./lib/event.js";
+import {generate_user_id, users} from "./lib/generate_ids.js";
 
 const app = express();
 const port = 80;
@@ -35,15 +36,26 @@ app.get('/validate/:ticket_id', (req, res) => {
     }
 });
 
+app.get('/api/get_new_user_id', (req, res) => {
+    const user_id = generate_user_id();
+    res.send(user_id);
+});
+
 app.get('/api/events', (req, res) => res.json(get_all_events()));
 
-app.get('/api/book/:event_id', (req, res) => {
+app.get('/api/book/:event_id/:user_id', (req, res) => {
     const {event_id} = req.params;
     const event = get_event(event_id);
+    const {user_id} = req.params;
     // If event is not found, respond with status 404 (Not Found)
-    event === null
-        ? res.status(404).send('Event not found')
-        : res.send(make_ticket(event_id).ticket_id);
+    if (event === null) {
+        return res.status(404).send('Event not found');
+    }
+    // If non existent user id is used to book a ticket, respond with status 404 (Not Found)
+    if (!users.includes(user_id)) {
+        return res.status(404).send('Invalid user ID')
+    }
+    res.send(make_ticket(event_id, user_id).ticket_id);
 });
 
 app.listen(port, () => console.log('Listening on port ' + port));

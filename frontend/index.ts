@@ -1,4 +1,5 @@
 import type {Event} from "../backend/lib/event.js";
+import {UserId} from "../backend/lib/generate_ids.js";
 
 function create_event_card(event: Event): HTMLElement {
     const card = document.createElement("div");
@@ -19,3 +20,9 @@ console.log(event_list);
 for (const event of event_list) {
     document.body.append(create_event_card(event));
 }
+
+// User gets a unique code to use when booking a ticket
+const user_id_response = await fetch('/api/get_new_user_id');
+const user_id: UserId = await user_id_response.text();
+
+// Show the user their ticket
