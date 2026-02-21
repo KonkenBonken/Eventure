@@ -3,6 +3,7 @@
   "dependencies": {
     "@types/express": "^5.0.6",
     "@types/qr-image": "^3.2.9",
+    "address": "^2.0.3",
     "express": "^5.2.1",
     "qr-image": "^3.2.0"
   }
