@@ -1,7 +1,11 @@
 import type {Event} from "../backend/lib/event.js";
 import {TicketId, UserId} from "../backend/lib/generate_ids.js";
+import {Ticket} from "../backend/lib/ticket.js";
 
-function create_event_card(event: Event): HTMLElement {
+const eventsSection = document.querySelector("#events");
+const ticketsSection = document.querySelector("#tickets");
+
+function append_event_card(event: Event): void {
     const card = document.createElement("div");
     card.classList.add("event");
     card.innerHTML = `
@@ -20,12 +24,18 @@ function create_event_card(event: Event): HTMLElement {
             ticket_response = await fetch(`/api/book/${event.event_id}/${user_id}`);
         }
         const ticket_id: TicketId = await ticket_response.text();
-        const ticket_element = document.createElement("p");
-        ticket_element.innerHTML = `Your ticket id: <code>${ticket_id}</code>`;
-        card.append(ticket_element);
+        append_ticket_card(ticket_id);
     });
 
-    return card;
+    eventsSection?.append(card);
+}
+
+function append_ticket_card(ticket_id: TicketId): void {
+    const card = document.createElement("p");
+    card.classList.add("ticket");
+    card.innerHTML = `Ticket id: <code>${ticket_id}</code>`;
+
+    ticketsSection?.append(card);
 }
 
 const event_list_response = await fetch('/api/events');
@@ -48,6 +58,20 @@ if (user_id === null) {
     await get_new_user_id();
 }
 
+let tickets_list_response = await fetch(`/api/get_tickets/${user_id}`);
+// If expired user id, request new and retry
+if (tickets_list_response.status === 401) {
+    await get_new_user_id();
+    tickets_list_response = await fetch(`/api/get_tickets/${user_id}`);
+}
+
+const ticket_list: Array<Ticket> = await tickets_list_response.json();
+console.log(ticket_list);
+
 for (const event of event_list) {
-    document.body.append(create_event_card(event));
+    append_event_card(event);
+}
+
+for (const ticket of ticket_list) {
+    append_ticket_card(ticket.ticket_id);
 }

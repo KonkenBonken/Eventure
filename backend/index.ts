@@ -1,7 +1,7 @@
 import express, {type Request, type Response} from 'express';
 import {join as join_path} from 'path';
 
-import {get_ticket, make_ticket} from "./lib/ticket.js";
+import {get_ticket, get_tickets_for_user, make_ticket} from "./lib/ticket.js";
 import {get_all_events, get_event} from "./lib/event.js";
 import {generate_user_id, users} from "./lib/generate_ids.js";
 
@@ -56,6 +56,15 @@ app.get('/api/book/:event_id/:user_id', (req, res) => {
         return res.status(401).send('Invalid user ID')
     }
     res.send(make_ticket(event_id, user_id).ticket_id);
+});
+
+app.get('/api/get_tickets/:user_id', (req, res) => {
+    const {user_id} = req.params;
+    // If non existent user id, respond with status 401 (Unauthorized)
+    if (!users.includes(user_id)) {
+        return res.status(401).send('Invalid user ID')
+    }
+    res.json(get_tickets_for_user(user_id));
 });
 
 app.listen(port, () => console.log('Listening on port ' + port));
