@@ -51,9 +51,9 @@ app.get('/api/book/:event_id/:user_id', (req, res) => {
     if (event === null) {
         return res.status(404).send('Event not found');
     }
-    // If non existent user id is used to book a ticket, respond with status 404 (Not Found)
+    // If non existent user id is used to book a ticket, respond with status 401 (Unauthorized)
     if (!users.includes(user_id)) {
-        return res.status(404).send('Invalid user ID')
+        return res.status(401).send('Invalid user ID')
     }
     res.send(make_ticket(event_id, user_id).ticket_id);
 });

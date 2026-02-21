@@ -13,7 +13,12 @@ function create_event_card(event: Event): HTMLElement {
     `;
 
     card.querySelector('button')?.addEventListener('click', async () => {
-        const ticket_response = await fetch(`/api/book/${event.event_id}/${user_id}`);
+        let ticket_response = await fetch(`/api/book/${event.event_id}/${user_id}`);
+        // If expired user id, request new and retry
+        if (ticket_response.status === 401) {
+            await get_new_user_id();
+            ticket_response = await fetch(`/api/book/${event.event_id}/${user_id}`);
+        }
         const ticket_id: TicketId = await ticket_response.text();
         const ticket_element = document.createElement("p");
         ticket_element.innerHTML = `Your ticket id: <code>${ticket_id}</code>`;
@@ -27,9 +32,21 @@ const event_list_response = await fetch('/api/events');
 const event_list: Array<Event> = await event_list_response.json();
 console.log(event_list);
 
-// User gets a unique code to use when booking a ticket
-const user_id_response = await fetch('/api/get_new_user_id');
-const user_id: UserId = await user_id_response.text();
+async function get_new_user_id() {
+    // Request new user id
+    const user_id_response = await fetch('/api/get_new_user_id');
+    const new_user_id: UserId = await user_id_response.text();
+
+    // Stores user_id between sessions
+    localStorage.setItem("user_id", new_user_id);
+    user_id = new_user_id;
+}
+
+let user_id: UserId | null = localStorage.getItem("user_id");
+// If no user id is stored, request new
+if (user_id === null) {
+    await get_new_user_id();
+}
 
 for (const event of event_list) {
     document.body.append(create_event_card(event));
