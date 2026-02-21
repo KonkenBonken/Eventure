@@ -1,5 +1,6 @@
 import express, {type Request, type Response} from 'express';
 import {join as join_path} from 'path';
+import {imageSync as create_qr_code} from 'qr-image';
 
 import {get_ticket, get_tickets_for_user, make_ticket} from "./lib/ticket.js";
 import {get_all_events, get_event} from "./lib/event.js";
@@ -33,6 +34,20 @@ app.get('/validate/:ticket_id', (req, res) => {
         event === null
             ? res.status(404).send('Event not found')
             : res.send(`Ticket valid for event: ${event.title}`);
+    }
+});
+
+app.get('/ticket_qr_code/:ticket_id', (req, res) => {
+    const {ticket_id} = req.params;
+    const ticket = get_ticket(ticket_id);
+    if (ticket === null) {
+        // Handle ticket not found
+        res.status(404).send('Ticket not found');
+    } else {
+        // TODO: Replace hardcoded `localhost`
+        res.header('Content-Type', 'image/svg+xml').send(
+            create_qr_code(`http://localhost/validate/${ticket_id}`, {ec_level: 'L', type: 'svg'})
+        );
     }
 });
 
