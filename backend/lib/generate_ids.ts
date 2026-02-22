@@ -1,4 +1,4 @@
-import { ph_lookup, ph_empty, type ProbingHashtable } from "./pkd/hashtables.js";
+import {ph_empty, ph_lookup, type ProbingHashtable} from "./pkd/hashtables.js";
 
 /** An event id consists of a six character long string consisting of characters a-z and 0-9 */
 export type EventId = string;
@@ -19,7 +19,7 @@ export function make_ht<V>(): ProbingHashtable<string, V> {
     return ph_empty<string, V>(100, hash_function);
 }
 
-// Checks if id is in hashtable and returns the value stored at that key if exsisting
+// Checks if id is in hashtable and returns the value stored at that key if existing
 export function lookup_id<V>(ht: ProbingHashtable<string, V>, id: string): V | null {
     const lookup = ph_lookup(ht, id);
     if (lookup === undefined) {
@@ -31,7 +31,8 @@ export function lookup_id<V>(ht: ProbingHashtable<string, V>, id: string): V | n
 // Generates a new unique id
 export function generate_new_id<V>(ht: ProbingHashtable<string, V>): string {
     // We generate a random number between 0 and 36⁶-1 and then return it as a six character long string in base 36
-    const id = Math.floor(Math.random() * 36 ** 6).toString(36).padStart(6, '0');
+    const id = Math.floor(Math.random() * 36 ** 6)
+        .toString(36).padStart(6, '0');
     // Check for duplicates, if id is unique then return id, otherwise generate a new one
     const is_unique = ph_lookup(ht, id);
     if (is_unique === undefined) {
@@ -44,11 +45,13 @@ export function generate_new_id<V>(ht: ProbingHashtable<string, V>): string {
 // USER IDs
 // Stores users in probing hashtable
 export const users: ProbingHashtable<UserId, UserId> = make_ht();
+
 // Generates user id
 export function generate_user_id(): UserId {
     return generate_new_id(users);
 }
-// Ckecks if user exisits
+
+// Checks if user exists
 export function is_user(user_id: UserId): UserId | null {
     return lookup_id(users, user_id);
 }

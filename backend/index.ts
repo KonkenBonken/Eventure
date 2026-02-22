@@ -16,8 +16,8 @@ app.use((req, res, next) => {
 
 const current_directory = import.meta.dirname;
 const frontend_directory = join_path(current_directory, '../frontend');
-const serve_file = (filename: string) =>
-    (req: Request, res: Response) => res.sendFile(join_path(frontend_directory, filename));
+const serve_file = (filename: string) => (req: Request, res: Response): void =>
+    res.sendFile(join_path(frontend_directory, filename));
 
 app.get('/', serve_file('index.html'));
 app.get('/index.js', serve_file('index.js'));
@@ -52,7 +52,7 @@ app.get('/api/book/:event_id/:user_id', (req, res) => {
     if (event === null) {
         return res.status(404).send('Event not found');
     }
-    // If non existent user id is used to book a ticket, respond with status 401 (Unauthorized)
+    // If non-existent user id, respond with status 401 (Unauthorized)
     if (is_user(user_id) === null) {
         return res.status(401).send('Invalid user ID')
     }
@@ -61,7 +61,7 @@ app.get('/api/book/:event_id/:user_id', (req, res) => {
 
 app.get('/api/get_tickets/:user_id', (req, res) => {
     const {user_id} = req.params;
-    // If non existent user id, respond with status 401 (Unauthorized)
+    // If non-existent user id, respond with status 401 (Unauthorized)
     if (is_user(user_id) === null) {
         return res.status(401).send('Invalid user ID')
     }
