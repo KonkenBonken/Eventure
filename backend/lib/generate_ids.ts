@@ -24,7 +24,7 @@ export function lookup_id<V>(ht: ProbingHashtable<string, V>, id: string): V | n
     const lookup = ph_lookup(ht, id);
     if (lookup === undefined) {
         return null;
-    }
+    } else {}
     return lookup;
 }
 
@@ -37,7 +37,7 @@ export function generate_new_id<V>(ht: ProbingHashtable<string, V>): string {
     const is_unique = ph_lookup(ht, id);
     if (is_unique === undefined) {
         return id;
-    }
+    } else {}
     return generate_new_id(ht);
 }
 

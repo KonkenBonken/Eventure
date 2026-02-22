@@ -22,7 +22,7 @@ function append_event_card(event: Event): void {
         if (ticket_response.status === 401) {
             await get_new_user_id();
             ticket_response = await fetch(`/api/book/${event.event_id}/${user_id}`);
-        }
+        } else {}
         const ticket_id: TicketId = await ticket_response.text();
         append_ticket_card(ticket_id);
     });
@@ -56,14 +56,14 @@ let user_id: UserId | null = localStorage.getItem("user_id");
 // If no user id is stored, request new
 if (user_id === null) {
     await get_new_user_id();
-}
+} else {}
 
 let tickets_list_response = await fetch(`/api/get_tickets/${user_id}`);
 // If expired user id, request new and retry
 if (tickets_list_response.status === 401) {
     await get_new_user_id();
     tickets_list_response = await fetch(`/api/get_tickets/${user_id}`);
-}
+} else {}
 
 const ticket_list: Array<Ticket> = await tickets_list_response.json();
 console.log(ticket_list);

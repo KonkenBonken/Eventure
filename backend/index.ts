@@ -51,11 +51,11 @@ app.get('/api/book/:event_id/:user_id', (req, res) => {
     // If event is not found, respond with status 404 (Not Found)
     if (event === null) {
         return res.status(404).send('Event not found');
-    }
+    } else {}
     // If non-existent user id, respond with status 401 (Unauthorized)
     if (is_user(user_id) === null) {
         return res.status(401).send('Invalid user ID')
-    }
+    } else {}
     res.send(make_ticket(event_id, user_id).ticket_id);
 });
 
@@ -64,7 +64,7 @@ app.get('/api/get_tickets/:user_id', (req, res) => {
     // If non-existent user id, respond with status 401 (Unauthorized)
     if (is_user(user_id) === null) {
         return res.status(401).send('Invalid user ID')
-    }
+    } else {}
     res.json(get_tickets_for_user(user_id));
 });
 

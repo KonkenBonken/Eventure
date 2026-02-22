@@ -27,7 +27,7 @@ export function get_all_events(): Array<Event> {
         //check its not an empty or deleted spot
         if (pos_entry !== undefined && pos_entry !== null) {
             events_array.push(pos_entry);
-        }
+        } else {}
     }
     return events_array;
 }
