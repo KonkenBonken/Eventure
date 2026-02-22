@@ -1,8 +1,13 @@
 {
   "type": "module",
   "dependencies": {
-    "@types/express": "^5.0.6",
     "address": "^2.0.3",
     "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@typescript-eslint/eslint-plugin": "^8.56.0",
+    "@typescript-eslint/parser": "^8.56.0",
+    "eslint": "^10.0.1"
   }
 }
