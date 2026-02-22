@@ -45,7 +45,9 @@ export function generate_new_id<V>(ht: ProbingHashtable<string, V>): string {
 // Stores users in probing hashtable
 export const users: ProbingHashtable<UserId, UserId> = make_ht();
 // Generates user id
-export const generate_user_id: UserId = generate_new_id(users);
+export function generate_user_id(): UserId {
+	return generate_new_id(users);
+}
 // Ckecks if user exisits
 export function is_user(user_id: UserId): UserId | null {
     return lookup_id(users, user_id);
