@@ -24,7 +24,7 @@ export function make_ticket(event_id: EventId, user_id: UserId): Ticket {
 
 export function get_tickets_for_user(user_id: UserId) {
     return tickets.values.filter(ticket =>
-        ticket !== undefined &&
-        ticket.user_id === user_id
+        ticket !== undefined
+        && ticket.user_id === user_id
     ) as Array<Ticket>;
 }
