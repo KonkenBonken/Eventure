@@ -1,5 +1,6 @@
 import express, {type Request, type Response} from 'express';
 import {join as join_path} from 'path';
+import {ip as local_ip_address} from "address";
 
 import {get_ticket, get_tickets_for_user, make_ticket} from "./lib/ticket.js";
 import {get_all_events, get_event} from "./lib/event.js";
@@ -67,4 +68,4 @@ app.get('/api/get_tickets/:user_id', (req, res) => {
     res.json(get_tickets_for_user(user_id));
 });
 
-app.listen(port, () => console.log('Listening on port ' + port));
+app.listen(port, () => console.log('Listening on http://' + local_ip_address()));

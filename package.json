@@ -2,6 +2,7 @@
   "type": "module",
   "dependencies": {
     "@types/express": "^5.0.6",
+    "address": "^2.0.3",
     "express": "^5.2.1"
   }
 }
