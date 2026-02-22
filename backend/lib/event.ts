@@ -1,4 +1,3 @@
-import {type ProbingHashtable} from './pkd/hashtables.js';
 import { ph_insert } from './pkd/hashtables.js';
 import {type EventId, lookup_id, make_ht} from './generate_ids.js';
 
@@ -15,7 +14,7 @@ export interface Event {
 
 
 //empty probing hashtable with 100 slots
-const events: ProbingHashtable<EventId, Event> = make_ht();;
+const events = make_ht<Event>();
 
 
 //Returns an Array with all the Event records

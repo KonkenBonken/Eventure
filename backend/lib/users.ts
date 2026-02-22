@@ -1,4 +1,4 @@
-import {ph_insert, ProbingHashtable} from './pkd/hashtables.js';
+import {ph_insert} from './pkd/hashtables.js';
 import {make_ht, lookup_id, generate_new_id, type UserId} from "./generate_ids.js";
 
 export interface User {
@@ -6,7 +6,7 @@ export interface User {
 }
 
 // Probing hashtable to store user id's
-export const users: ProbingHashtable<UserId, User> = make_ht();
+export const users = make_ht<User>();
 
 // Gets user information if user exisisits in hashtable, otherwise null is returned
 export function is_user(user_id: UserId): User | null {

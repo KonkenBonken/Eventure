@@ -1,4 +1,4 @@
-import {ph_insert, ProbingHashtable} from './pkd/hashtables.js';
+import {ph_insert} from './pkd/hashtables.js';
 import {make_ht, lookup_id, generate_new_id, type TicketId, type EventId, type UserId} from "./generate_ids.js";
 
 export interface Ticket {
@@ -7,7 +7,7 @@ export interface Ticket {
     user_id: UserId
 }
 
-export const tickets: ProbingHashtable<TicketId, Ticket> = make_ht();
+export const tickets = make_ht<Ticket>();
 
 export function get_ticket(ticket_id: TicketId): Ticket | null {
     return lookup_id(tickets, ticket_id);
