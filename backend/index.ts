@@ -4,7 +4,7 @@ import {ip as local_ip_address} from "address";
 
 import {get_ticket, get_tickets_for_user, make_ticket} from "./lib/ticket.js";
 import {get_all_events, get_event} from "./lib/event.js";
-import {generate_user_id, users} from "./lib/generate_ids.js";
+import {generate_user_id, is_user} from "./lib/generate_ids.js";
 
 const app = express();
 const port = 80;
@@ -38,7 +38,7 @@ app.get('/validate/:ticket_id', (req, res) => {
 });
 
 app.get('/api/get_new_user_id', (req, res) => {
-    const user_id = generate_user_id();
+    const user_id = generate_user_id;
     res.send(user_id);
 });
 
@@ -53,7 +53,7 @@ app.get('/api/book/:event_id/:user_id', (req, res) => {
         return res.status(404).send('Event not found');
     }
     // If non existent user id is used to book a ticket, respond with status 401 (Unauthorized)
-    if (!users.includes(user_id)) {
+    if (is_user === null) {
         return res.status(401).send('Invalid user ID')
     }
     res.send(make_ticket(event_id, user_id).ticket_id);
@@ -62,7 +62,7 @@ app.get('/api/book/:event_id/:user_id', (req, res) => {
 app.get('/api/get_tickets/:user_id', (req, res) => {
     const {user_id} = req.params;
     // If non existent user id, respond with status 401 (Unauthorized)
-    if (!users.includes(user_id)) {
+    if (is_user === null) {
         return res.status(401).send('Invalid user ID')
     }
     res.json(get_tickets_for_user(user_id));

@@ -1,5 +1,5 @@
-import {ph_empty, ph_insert, ph_lookup} from './pkd/hashtables.js';
-import {hash_function, generate_new_ticket_id, type TicketId, type EventId, type UserId} from "./generate_ids.js";
+import {ph_insert, ProbingHashtable} from './pkd/hashtables.js';
+import {make_ht, lookup_id, generate_new_id, type TicketId, type EventId, type UserId} from "./generate_ids.js";
 
 export interface Ticket {
     event_id: EventId,
@@ -7,19 +7,15 @@ export interface Ticket {
     user_id: UserId
 }
 
-export const tickets = ph_empty<TicketId, Ticket>(100, hash_function);
+export const tickets: ProbingHashtable<TicketId, Ticket> = make_ht();
 
 export function get_ticket(ticket_id: TicketId): Ticket | null {
-    const find_ticket = ph_lookup<TicketId, Ticket>(tickets, ticket_id);
-    if(find_ticket === undefined) {
-        return null;
-    }
-    return find_ticket;
+    return lookup_id(tickets, ticket_id);
 }
 
 export function make_ticket(event_id: EventId, user_id: UserId): Ticket {
 // Generate id, create ticket, store ticket in Tickets and return Ticket
-    const ticket_id = generate_new_ticket_id();
+    const ticket_id = generate_new_id(tickets);
     const current_ticket = {event_id, ticket_id, user_id};
     // adding ticket to tickets:
     ph_insert<TicketId, Ticket>(tickets, ticket_id, current_ticket);

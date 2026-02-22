@@ -1,6 +1,6 @@
 import {type ProbingHashtable} from './pkd/hashtables.js';
-import { ph_empty,  ph_lookup, ph_insert } from './pkd/hashtables.js';
-import {type EventId, hash_function} from './generate_ids.js';
+import { ph_insert } from './pkd/hashtables.js';
+import {type EventId, lookup_id, make_ht} from './generate_ids.js';
 
 // A string representing a ISO timestamp
 type Timestamp = string;
@@ -15,7 +15,7 @@ export interface Event {
 
 
 //empty probing hashtable with 100 slots
-const events: ProbingHashtable<EventId, Event> = ph_empty(100, hash_function);
+const events: ProbingHashtable<EventId, Event> = make_ht();;
 
 
 //Returns an Array with all the Event records
@@ -35,12 +35,7 @@ export function get_all_events(): Array<Event> {
 
 //Gets event record if found in hashtable events, else returns null
 export function get_event(event_id: EventId): Event | null {
-    const found_event = ph_lookup(events, event_id)
-    if (found_event === undefined) {
-        return null;
-    } else {
-        return found_event;
-    }
+    return lookup_id(events, event_id);
 }
 
 //Turns a ISO date string to a Date

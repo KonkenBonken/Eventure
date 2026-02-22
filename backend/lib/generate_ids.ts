@@ -1,5 +1,4 @@
-import { ph_lookup } from "./pkd/hashtables.js";
-import { tickets, Ticket } from "./ticket.js";
+import { ph_lookup, ph_empty, type ProbingHashtable } from "./pkd/hashtables.js";
 
 /** An event id consists of a six character long string consisting of characters a-z and 0-9 */
 export type EventId = string;
@@ -10,31 +9,44 @@ export type TicketId = string;
 /** A user id consists of a six character long string consisting of characters a-z and 0-9 */
 export type UserId = string;
 
-export function generate_new_ticket_id(): TicketId {
-    // We generate a random number between 0 and 36⁶-1 and then return it as a six character long string in base 36
-    const id = Math.floor(Math.random() * 36 ** 6).toString(36).padStart(6, '0');
-    
-    // Check for duplicates
-    const is_unique = ph_lookup<TicketId, Ticket>(tickets, id);
-    if (is_unique === undefined) {
-        return id;
-    }
-    // else generate a new id
-    return generate_new_ticket_id();
-}
-
 export function hash_function(k: TicketId | EventId): number {
     return parseInt(k, 36);
 }
 
-// because this is a temporary solution for MVP - later hash table would be fitting
-export const users: Array<UserId> = [];
+// ABSTRACTIONS
+// Makes an empty probing hashtable with size 100
+export function make_ht<V> (): ProbingHashtable<string,V> {
+	return ph_empty<string, V>(100, hash_function);
+}
 
-export function generate_user_id(): UserId {
-    const user_id = Math.floor(Math.random() * 36 ** 6).toString(36).padStart(6, '0');
-	if (users.includes(user_id)) {
-	 return generate_user_id();
+// Checks if id is in hashtable and returns the value stored at that key if exsisting
+export function lookup_id<V>(ht: ProbingHashtable<string, V>, id: string): V | null {
+	const lookup = ph_lookup(ht, id);
+	if (lookup === undefined) {
+		return null;
 	}
-    users.push(user_id);
-    return user_id
+	return lookup;
+}
+
+// Generates a new unique id
+export function generate_new_id<V>(ht: ProbingHashtable<string, V>): string {
+	// We generate a random number between 0 and 36⁶-1 and then return it as a six character long string in base 36
+	const id = Math.floor(Math.random() * 36 ** 6).toString(36).padStart(6, '0');
+	// Check for duplicates, if id is unique then return id, otherwise generate a new one
+	const is_unique = ph_lookup(ht, id);
+	if (is_unique === undefined) {
+        return id;
+    }
+    return generate_new_id(ht);
+}
+
+
+// USER IDs
+// Stores users in probing hashtable
+export const users: ProbingHashtable<UserId, UserId> = make_ht();
+// Generates user id
+export const generate_user_id: UserId = generate_new_id(users);
+// Ckecks if user exisits
+export function is_user(user_id: UserId): UserId | null {
+    return lookup_id(users, user_id);
 }
