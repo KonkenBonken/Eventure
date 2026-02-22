@@ -39,16 +39,3 @@ export function generate_new_id<V>(ht: ProbingHashtable<string, V>): string {
     }
     return generate_new_id(ht);
 }
-
-
-// USER IDs
-// Stores users in probing hashtable
-export const users: ProbingHashtable<UserId, UserId> = make_ht();
-// Generates user id
-export function generate_user_id(): UserId {
-	return generate_new_id(users);
-}
-// Ckecks if user exisits
-export function is_user(user_id: UserId): UserId | null {
-    return lookup_id(users, user_id);
-}
