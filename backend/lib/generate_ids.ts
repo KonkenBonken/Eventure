@@ -9,7 +9,7 @@ export type TicketId = string;
 /** A user id consists of a six character long string consisting of characters a-z and 0-9 */
 export type UserId = string;
 
-export function hash_function(k: TicketId | EventId): number {
+function hash_function(k: TicketId | EventId): number {
     return parseInt(k, 36);
 }
 
@@ -19,7 +19,12 @@ export function make_ht<V>(): ProbingHashtable<string, V> {
     return ph_empty<string, V>(100, hash_function);
 }
 
-// Checks if id is in hashtable and returns the value stored at that key if existing
+/**
+ * Gets the value of a key in a hashtable
+ * @param ht The hash table to search
+ * @param id The key to search for
+ * @returns The value at the key if found, else returns null
+ */
 export function lookup_id<V>(ht: ProbingHashtable<string, V>, id: string): V | null {
     const lookup = ph_lookup(ht, id);
     if (lookup === undefined) {
@@ -28,7 +33,11 @@ export function lookup_id<V>(ht: ProbingHashtable<string, V>, id: string): V | n
     return lookup;
 }
 
-// Generates a new unique id
+/**
+ * Generates a new unique id
+ * @param ht The hash table to search for collisions in
+ * @returns The generated id
+ */
 export function generate_new_id<V>(ht: ProbingHashtable<string, V>): string {
     // We generate a random number between 0 and 36⁶-1 and then return it as a six character long string in base 36
     const id = Math.floor(Math.random() * 36 ** 6)

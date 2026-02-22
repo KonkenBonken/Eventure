@@ -17,7 +17,11 @@ export interface Event {
 const events: ProbingHashtable<EventId, Event> = make_ht();
 
 
-//Returns an Array with all the Event records
+/**
+ * Returns an Array with all the stored Event records
+ * @complexity Θ(n)
+ * @returns An Array of all events
+ */
 export function get_all_events(): Array<Event> {
     const events_array: Array<Event> = [];
 
@@ -32,14 +36,22 @@ export function get_all_events(): Array<Event> {
     return events_array;
 }
 
-//Gets event record if found in hashtable events, else returns null
+/**
+ * Gets the event from an id
+ * @param event_id The id of the event
+ * @returns The event record if found, else returns null
+ */
 export function get_event(event_id: EventId): Event | null {
     return lookup_id(events, event_id);
 }
 
-//Turns a ISO date string to a Date
-export function get_date(Event: Event): Date {
-    return new Date(Event.timestamp);
+/**
+ * Gets the Date object of an Event timestamp
+ * @param event The event
+ * @returns The Date object
+ */
+export function get_date(event: Event): Date {
+    return new Date(event.timestamp);
 }
 
 //hardcoded examples
