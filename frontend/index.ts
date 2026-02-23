@@ -6,6 +6,10 @@ import {User} from "../backend/lib/users.js";
 const eventsSection = document.querySelector("#events");
 const ticketsSection = document.querySelector("#tickets");
 
+/**
+ * Creates an event card and appends it to the Events section
+ * @param event The event
+ */
 function append_event_card(event: Event): void {
     const card = document.createElement("div");
     card.classList.add("event");
@@ -31,6 +35,10 @@ function append_event_card(event: Event): void {
     eventsSection?.append(card);
 }
 
+/**
+ * Creates a ticket card and appends it to the Tickets section
+ * @param ticket_id The ticket id
+ */
 function append_ticket_card(ticket_id: TicketId): void {
     const card = document.createElement("p");
     card.classList.add("ticket");
@@ -43,6 +51,9 @@ const event_list_response = await fetch('/api/events');
 const event_list: Array<Event> = await event_list_response.json();
 console.log(event_list);
 
+/**
+ * Fetches a new user id, stores it in local storage and updates user_id
+ */
 async function get_new_user_id() {
     // Request new user id
     const user_id_response = await fetch('/api/get_new_user_id');
