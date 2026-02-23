@@ -44,27 +44,28 @@ app.get('/api/get_new_user_id', (req, res) => {
 app.get('/api/events', (req, res) => res.json(get_all_events()));
 
 app.get('/api/book/:event_id/:user_id', (req, res) => {
-    const {event_id} = req.params;
+    const {event_id, user_id} = req.params;
     const event = get_event(event_id);
-    const {user_id} = req.params;
     // If event is not found, respond with status 404 (Not Found)
     if (event === null) {
-        return res.status(404).send('Event not found');
-    } else {}
+        res.status(404).send('Event not found');
+    }
     // If non-existent user id, respond with status 401 (Unauthorized)
-    if (!user_exists(user_id)) {
-        return res.status(401).send('Invalid user ID')
-    } else {}
-    res.send(make_ticket(event_id, user_id).ticket_id);
+    else if (!user_exists(user_id)) {
+        res.status(401).send('Invalid user ID')
+    } else {
+        res.send(make_ticket(event_id, user_id).ticket_id);
+    }
 });
 
 app.get('/api/get_tickets/:user_id', (req, res) => {
     const {user_id} = req.params;
     // If non-existent user id, respond with status 401 (Unauthorized)
     if (!user_exists(user_id)) {
-        return res.status(401).send('Invalid user ID')
-    } else {}
-    res.json(get_tickets_for_user(user_id));
+        res.status(401).send('Invalid user ID')
+    } else {
+        res.json(get_tickets_for_user(user_id));
+    }
 });
 
 app.listen(port, () => console.log('Listening on http://' + local_ip_address()));
