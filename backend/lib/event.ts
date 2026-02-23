@@ -1,5 +1,7 @@
-import { ph_insert } from './pkd/hashtables.js';
-import {type EventId, generate_new_id, lookup_id, make_ht} from './generate_ids.js';
+import {ph_insert} from './pkd/hashtables.js';
+import {
+    type EventId, generate_new_id, lookup_id, make_table
+} from './generate_ids.js';
 
 // A string representing a ISO timestamp
 type Timestamp = string;
@@ -13,33 +15,45 @@ export interface Event {
 }
 
 
-//empty probing hashtable with 100 slots
-const events = make_ht<Event>();
+// Table to store events in
+const events = make_table<Event>();
 
 
-//Returns an Array with all the Event records
+/**
+ * Returns an Array with all the stored Event records
+ * @complexity Θ(n)
+ * @returns An Array of all events
+ */
 export function get_all_events(): Array<Event> {
-    const eventsArray: Array<Event> = [];
+    const events_array: Array<Event> = [];
 
     for (let index = 0; index < 100; index++) {
         const pos_entry = events.values[index];
 
         //check its not an empty or deleted spot
         if (pos_entry !== undefined && pos_entry !== null) {
-            eventsArray.push(pos_entry);
-        }
+            events_array.push(pos_entry);
+        } else {}
     }
-    return eventsArray;
+    return events_array;
 }
 
-//Gets event record if found in hashtable events, else returns null
+/**
+ * Gets the event from an id
+ * @param event_id The id of the event
+ * @returns The event record if found, else returns null
+ */
 export function get_event(event_id: EventId): Event | null {
     return lookup_id(events, event_id);
 }
 
-//Turns a ISO date string to a Date
-export function get_date(Event: Event): Date {
-    return new Date(Event.timestamp);
+/**
+ * Gets the Date object of an Event timestamp
+ * @param event The event
+ * @returns The Date object
+ */
+export function get_date(event: Event): Date {
+    return new Date(event.timestamp);
 }
 
 /**
