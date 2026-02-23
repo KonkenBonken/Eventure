@@ -1,6 +1,6 @@
 import {ph_insert} from './pkd/hashtables.js';
 import {
-    type EventId, generate_new_id, lookup_id, make_ht, type TicketId,
+    type EventId, generate_new_id, lookup_id, make_table, type TicketId,
     type UserId
 } from "./generate_ids.js";
 
@@ -10,7 +10,8 @@ export interface Ticket {
     user_id: UserId
 }
 
-export const tickets = make_ht<Ticket>();
+// Table to store tickets in
+const tickets = make_table<Ticket>();
 
 /**
  * Gets the ticket from an id

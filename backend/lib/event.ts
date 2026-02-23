@@ -1,5 +1,7 @@
 import {ph_insert} from './pkd/hashtables.js';
-import {type EventId, lookup_id, make_ht} from './generate_ids.js';
+import {
+    type EventId, lookup_id, make_table
+} from './generate_ids.js';
 
 // A string representing a ISO timestamp
 type Timestamp = string;
@@ -13,8 +15,8 @@ export interface Event {
 }
 
 
-//empty probing hashtable with 100 slots
-const events = make_ht<Event>();
+// Table to store events in
+const events = make_table<Event>();
 
 
 /**

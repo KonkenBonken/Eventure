@@ -12,8 +12,11 @@ function hash_function(k: Id): number {
 }
 
 // ABSTRACTIONS
-// Makes an empty probing hashtable with size 100
-export function make_ht<V>(): ProbingHashtable<Id, V> {
+/**
+ * Creates an empty table with 100 slots
+ * @returns The created table
+ */
+export function make_table<V>(): ProbingHashtable<Id, V> {
     return ph_empty(100, hash_function);
 }
 
