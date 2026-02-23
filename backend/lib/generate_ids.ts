@@ -27,11 +27,8 @@ export function make_table<V>(): ProbingHashtable<Id, V> {
  * @returns The value at the key if found, else returns null
  */
 export function lookup_id<V>(ht: ProbingHashtable<Id, V>, id: Id): V | null {
-    const lookup = ph_lookup(ht, id);
-    if (lookup === undefined) {
-        return null;
-    } else {}
-    return lookup;
+    const value = ph_lookup(ht, id);
+    return value === undefined ? null : value;
 }
 
 /**
@@ -44,9 +41,6 @@ export function generate_new_id<V>(ht: ProbingHashtable<Id, V>): Id {
     const id = Math.floor(Math.random() * 36 ** 6)
         .toString(36).padStart(6, '0');
     // Check for duplicates, if id is unique then return id, otherwise generate a new one
-    const is_unique = ph_lookup(ht, id);
-    if (is_unique === undefined) {
-        return id;
-    } else {}
-    return generate_new_id(ht);
+    const is_unique = ph_lookup(ht, id) === undefined;
+    return is_unique ? id : generate_new_id(ht);
 }

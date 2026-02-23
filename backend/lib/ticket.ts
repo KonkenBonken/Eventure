@@ -30,10 +30,10 @@ export function get_ticket(ticket_id: TicketId): Ticket | null {
  */
 export function make_ticket(event_id: EventId, user_id: UserId): Ticket {
     const ticket_id = generate_new_id(tickets);
-    const current_ticket = {event_id, ticket_id, user_id};
+    const new_ticket = {event_id, ticket_id, user_id};
     // adding ticket to tickets:
-    ph_insert<TicketId, Ticket>(tickets, ticket_id, current_ticket);
-    return current_ticket;
+    ph_insert(tickets, ticket_id, new_ticket);
+    return new_ticket;
 }
 
 /**
