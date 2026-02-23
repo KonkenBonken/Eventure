@@ -40,9 +40,12 @@ function append_event_card(event: Event): void {
  * @param ticket_id The ticket id
  */
 function append_ticket_card(ticket_id: TicketId): void {
-    const card = document.createElement("p");
+    const card = document.createElement("div");
     card.classList.add("ticket");
-    card.innerHTML = `Ticket id: <code>${ticket_id}</code>`;
+    card.innerHTML = `
+        <p>Ticket id: <code>${ticket_id}</code></p>
+        <img src="/ticket_qr_code/${ticket_id}">
+    `;
 
     ticketsSection?.append(card);
 }
