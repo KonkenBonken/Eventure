@@ -4,7 +4,7 @@ import {ip as local_ip_address} from "address";
 
 import {get_ticket, get_tickets_for_user, make_ticket} from "./lib/ticket.js";
 import {get_all_events, get_event} from "./lib/event.js";
-import {generate_user_id, is_user} from "./lib/generate_ids.js";
+import {generate_user_id, is_user} from "./lib/users.js";
 
 const app = express();
 const port = 80;
@@ -38,8 +38,7 @@ app.get('/validate/:ticket_id', (req, res) => {
 });
 
 app.get('/api/get_new_user_id', (req, res) => {
-    const user_id = generate_user_id();
-    res.send(user_id);
+    res.json(generate_user_id());
 });
 
 app.get('/api/events', (req, res) => res.json(get_all_events()));

@@ -1,6 +1,7 @@
 import type {Event} from "../backend/lib/event.js";
 import {TicketId, UserId} from "../backend/lib/generate_ids.js";
 import {Ticket} from "../backend/lib/ticket.js";
+import {User} from "../backend/lib/users.js";
 
 const eventsSection = document.querySelector("#events");
 const ticketsSection = document.querySelector("#tickets");
@@ -45,7 +46,8 @@ console.log(event_list);
 async function get_new_user_id() {
     // Request new user id
     const user_id_response = await fetch('/api/get_new_user_id');
-    const new_user_id: UserId = await user_id_response.text();
+    const user_obj: User = await user_id_response.json();
+    const new_user_id = user_obj.user_id;
 
     // Stores user_id between sessions
     localStorage.setItem("user_id", new_user_id);
