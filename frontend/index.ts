@@ -6,6 +6,24 @@ import {User} from "../backend/lib/users.js";
 const eventsSection = document.querySelector("#events");
 const ticketsSection = document.querySelector("#tickets");
 
+
+/**
+ * Appends user_id to the url and fetches the resource,
+ * if the server responds with status 401 (Unauthorized),
+ * request a new user_id and then retry the fetch. Only retries once
+ * @param url The base url, excluding `/{user_id}`
+ */
+async function fetch_with_user_id(url: string): Promise<Response> {
+    const response = await fetch(`${url}/${user_id}`);
+    // If invalid user id, request new and retry
+    if (response.status === 401) {
+        await get_new_user_id();
+        return fetch(`${url}/${user_id}`);
+    } else {
+        return response;
+    }
+}
+
 /**
  * Creates an event card and appends it to the Events section
  * @param event The event
@@ -22,12 +40,7 @@ function append_event_card(event: Event): void {
     `;
 
     card.querySelector('button')?.addEventListener('click', async () => {
-        let ticket_response = await fetch(`/api/book/${event.event_id}/${user_id}`);
-        // If expired user id, request new and retry
-        if (ticket_response.status === 401) {
-            await get_new_user_id();
-            ticket_response = await fetch(`/api/book/${event.event_id}/${user_id}`);
-        } else {}
+        const ticket_response = await fetch_with_user_id(`/api/book/${event.event_id}`);
         if (ticket_response.status === 409) {
             alert(`Sorry, ${event.title} is sold out`);
         } else {
@@ -78,13 +91,7 @@ if (user_id === null) {
     await get_new_user_id();
 } else {}
 
-let tickets_list_response = await fetch(`/api/get_tickets/${user_id}`);
-// If expired user id, request new and retry
-if (tickets_list_response.status === 401) {
-    await get_new_user_id();
-    tickets_list_response = await fetch(`/api/get_tickets/${user_id}`);
-} else {}
-
+const tickets_list_response = await fetch_with_user_id(`/api/get_tickets`);
 const ticket_list: Array<Ticket> = await tickets_list_response.json();
 console.log(ticket_list);
 
