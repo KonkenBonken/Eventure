@@ -4,7 +4,7 @@ import {ip as local_ip_address} from "address";
 import {imageSync as create_qr_code} from 'qr-image';
 
 import {get_ticket, get_tickets_for_user, make_ticket} from "./lib/ticket.js";
-import {get_all_events, get_event, is_sold_out, ticket_count} from "./lib/event.js";
+import {get_all_events, get_event} from "./lib/event.js";
 import {make_user, user_exists} from "./lib/users.js";
 
 const app = express();
@@ -68,10 +68,10 @@ app.get('/api/book/:event_id/:user_id', (req, res) => {
     else if (!user_exists(user_id)) {
         res.status(401).send('Invalid user ID')
     } else {
-        if (is_sold_out(event) === false) {
+        const ticket = make_ticket(event_id, user_id);
+        if (ticket !== false) {
             // Tickets are still available
-            ticket_count(event);
-            res.send(make_ticket(event_id, user_id).ticket_id);
+            res.send(ticket.ticket_id);
         } else {
             // Event is sold out - send message
             res.send('Sorry, tickets are sold out');

@@ -3,6 +3,7 @@ import {
     type EventId, generate_new_id, lookup_id, make_table, type TicketId,
     type UserId
 } from "./generate_ids.js";
+import {get_event, is_sold_out, ticket_count} from "./event.js";
 
 export interface Ticket {
     event_id: EventId,
@@ -26,12 +27,20 @@ export function get_ticket(ticket_id: TicketId): Ticket | null {
  * Creates a ticket record and stores it in the tickets table
  * @param event_id The id of the event
  * @param user_id The id of the user
- * @returns The created ticket record
+ * @returns The created ticket record if successfully booked,
+ *          if event is not found or is sold out, returns false
  */
-export function make_ticket(event_id: EventId, user_id: UserId): Ticket {
+export function make_ticket(event_id: EventId, user_id: UserId): Ticket | false {
+    const event = get_event(event_id);
+    // If event is not found or is sold out, return false
+    if (event === null || is_sold_out(event)) {
+        return false;
+    }
+
     const ticket_id = generate_new_id(tickets);
     const new_ticket = {event_id, ticket_id, user_id};
     // adding ticket to tickets:
+    ticket_count(event);
     ph_insert(tickets, ticket_id, new_ticket);
     return new_ticket;
 }
