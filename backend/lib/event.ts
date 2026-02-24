@@ -11,7 +11,9 @@ export interface Event {
     title: string,
     description: string,
     timestamp: Timestamp,
-    price: number
+    price: number,
+    capacity: number | undefined,
+    sold_tickets: number
 }
 
 
@@ -68,12 +70,47 @@ export function make_event(data: Omit<Event, 'event_id'>): Event {
     return new_event;
 }
 
+/**
+ * Increments the number of sold tickets for given event
+ * @param event The event
+ * @precondition The event exsists and is not sold out
+ * @returns Updated Event if ticket to event is sold
+ */
+export function ticket_count(event: Event): Event {
+    // add one to sold_tickets when a ticket is booked and update the event in hashtable
+    const sold = event.sold_tickets;
+    const updated = { ...event, sold_tickets: sold + 1};
+    ph_insert(events, event.event_id, updated);
+    return updated;
+}
+
+/**
+ * Checks if event is sold out
+ * @param event the event
+ * @precondition The event exsists
+ * @returns {Boolean} Returns true if event is sold out and
+ *                    false if tickets are still available
+ */
+export function is_sold_out(event: Event): boolean {
+    // the event capacity is unlimited - never sold out
+    if (event.capacity === undefined) {
+        return false;
+    } else if (event.sold_tickets < event.capacity) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+
 // add hardcoded examples to the events table
 make_event({
     title: "Hot chocochug",
     description: "Drink a liter of hot chocolate challenge, hot chocolate provided",
     timestamp: new Date(2026, 1, 25).toJSON(),
     price: 40,
+    capacity: undefined,
+    sold_tickets: 3,
 });
 
 make_event({
@@ -81,6 +118,8 @@ make_event({
     description: "Come build some beehives for spring!",
     timestamp: new Date(2026, 3, 20).toJSON(),
     price: 10,
+    capacity: 15,
+    sold_tickets: 15,
 });
 
 make_event({
@@ -88,5 +127,7 @@ make_event({
     description: "Dance around in outfits inspired by your favorite drink!",
     timestamp: new Date(2026, 2, 3).toJSON(),
     price: 150,
+    capacity: 150,
+    sold_tickets: 148,
 });
 
