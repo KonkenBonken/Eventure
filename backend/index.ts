@@ -73,8 +73,8 @@ app.get('/api/book/:event_id/:user_id', (req, res) => {
             // Tickets are still available
             res.send(ticket.ticket_id);
         } else {
-            // Event is sold out - send message
-            res.send('Sorry, tickets are sold out');
+            // If event is sold out, respond with status 409 (Conflict)
+            res.status(409).send('Sorry, tickets are sold out');
         }
     }
 });

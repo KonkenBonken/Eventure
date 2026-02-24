@@ -28,8 +28,12 @@ function append_event_card(event: Event): void {
             await get_new_user_id();
             ticket_response = await fetch(`/api/book/${event.event_id}/${user_id}`);
         } else {}
-        const ticket_id: TicketId = await ticket_response.text();
-        append_ticket_card(ticket_id);
+        if (ticket_response.status === 409) {
+            alert(`Sorry, ${event.title} is sold out`);
+        } else {
+            const ticket_id: TicketId = await ticket_response.text();
+            append_ticket_card(ticket_id);
+        }
     });
 
     eventsSection?.append(card);
