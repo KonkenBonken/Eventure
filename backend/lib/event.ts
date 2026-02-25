@@ -107,7 +107,7 @@ export function is_sold_out(event: Event): boolean {
 make_event({
     title: "Hot chocochug",
     description: "Drink a liter of hot chocolate challenge, hot chocolate provided",
-    timestamp: new Date(2026, 1, 25).toJSON(),
+    timestamp: new Date(2026, 1, 25, 17, 0).toJSON(),
     price: 40,
     capacity: undefined,
     sold_tickets: 3,
@@ -116,7 +116,7 @@ make_event({
 make_event({
     title: "Bee hive building",
     description: "Come build some beehives for spring!",
-    timestamp: new Date(2026, 3, 20).toJSON(),
+    timestamp: new Date(2026, 3, 20, 15, 15).toJSON(),
     price: 10,
     capacity: 15,
     sold_tickets: 15,
@@ -125,7 +125,7 @@ make_event({
 make_event({
     title: "Beverage ball",
     description: "Dance around in outfits inspired by your favorite drink!",
-    timestamp: new Date(2026, 2, 3).toJSON(),
+    timestamp: new Date(2026, 2, 3, 18, 30).toJSON(),
     price: 150,
     capacity: 150,
     sold_tickets: 148,
