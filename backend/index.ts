@@ -22,6 +22,7 @@ const serve_file = (filename: string) => (req: Request, res: Response): void =>
 
 app.get('/', serve_file('index.html'));
 app.get('/index.js', serve_file('index.js'));
+app.get('/index.css', serve_file('index.css'));
 
 app.get('/validate/:ticket_id', (req, res) => {
     const {ticket_id} = req.params;
