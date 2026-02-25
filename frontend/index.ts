@@ -1,24 +1,23 @@
 import type {Event} from "../backend/lib/event.js";
-import {TicketId, UserId} from "../backend/lib/generate_ids.js";
+import {TicketId} from "../backend/lib/generate_ids.js";
 import {Ticket} from "../backend/lib/ticket.js";
-import {User} from "../backend/lib/users.js";
 
 const eventsSection = document.querySelector("#events");
 const ticketsSection = document.querySelector("#tickets");
 
 
 /**
- * Appends user_id to the url and fetches the resource,
+ * Appends username to the url and fetches the resource,
  * if the server responds with status 401 (Unauthorized),
- * request a new user_id and then retry the fetch. Only retries once
- * @param url The base url, excluding `/{user_id}`
+ * signs up with username and then retries the fetch. Only retries once
+ * @param url The base url, excluding `/{username}`
  */
 async function fetch_with_user_id(url: string): Promise<Response> {
-    const response = await fetch(`${url}/${user_id}`);
-    // If invalid user id, request new and retry
+    const response = await fetch(`${url}/${username}`);
+    // If invalid user id, sign up and retry
     if (response.status === 401) {
-        await get_new_user_id();
-        return fetch(`${url}/${user_id}`);
+        await fetch(`/api/signup/${username}`);
+        return fetch(`${url}/${username}`);
     } else {
         return response;
     }
@@ -71,25 +70,11 @@ const event_list_response = await fetch('/api/events');
 const event_list: Array<Event> = await event_list_response.json();
 console.log(event_list);
 
-/**
- * Fetches a new user id, stores it in local storage and updates user_id
- */
-async function get_new_user_id() {
-    // Request new user id
-    const user_id_response = await fetch('/api/get_new_user_id');
-    const user_obj: User = await user_id_response.json();
-    const new_user_id = user_obj.user_id;
-
-    // Stores user_id between sessions
-    localStorage.setItem("user_id", new_user_id);
-    user_id = new_user_id;
+let _username: string | undefined;
+while (!_username) {
+    _username = prompt('What is your username?')?.trim();
 }
-
-let user_id: UserId | null = localStorage.getItem("user_id");
-// If no user id is stored, request new
-if (user_id === null) {
-    await get_new_user_id();
-} else {}
+const username: string = _username;
 
 const tickets_list_response = await fetch_with_user_id(`/api/get_tickets`);
 const ticket_list: Array<Ticket> = await tickets_list_response.json();

@@ -51,24 +51,26 @@ app.get('/ticket_qr_code/:ticket_id', (req, res) => {
     }
 });
 
-app.get('/api/get_new_user_id', (req, res) => {
-    res.json(make_user());
+app.get('/api/signup/:username', (req, res) => {
+    const {username} = req.params;
+    make_user(username);
+    res.sendStatus(200);
 });
 
 app.get('/api/events', (req, res) => res.json(get_all_events()));
 
-app.get('/api/book/:event_id/:user_id', (req, res) => {
-    const {event_id, user_id} = req.params;
+app.get('/api/book/:event_id/:username', (req, res) => {
+    const {event_id, username} = req.params;
     const event = get_event(event_id);
     // If event is not found, respond with status 404 (Not Found)
     if (event === null) {
         res.status(404).send('Event not found');
     }
-    // If non-existent user id, respond with status 401 (Unauthorized)
-    else if (!user_exists(user_id)) {
-        res.status(401).send('Invalid user ID')
+    // If non-existent username, respond with status 401 (Unauthorized)
+    else if (!user_exists(username)) {
+        res.status(401).send('Invalid username')
     } else {
-        const ticket = make_ticket(event_id, user_id);
+        const ticket = make_ticket(event_id, username);
         if (ticket !== false) {
             // Tickets are still available
             res.send(ticket.ticket_id);
@@ -79,13 +81,13 @@ app.get('/api/book/:event_id/:user_id', (req, res) => {
     }
 });
 
-app.get('/api/get_tickets/:user_id', (req, res) => {
-    const {user_id} = req.params;
-    // If non-existent user id, respond with status 401 (Unauthorized)
-    if (!user_exists(user_id)) {
-        res.status(401).send('Invalid user ID')
+app.get('/api/get_tickets/:username', (req, res) => {
+    const {username} = req.params;
+    // If non-existent username, respond with status 401 (Unauthorized)
+    if (!user_exists(username)) {
+        res.status(401).send('Invalid username')
     } else {
-        res.json(get_tickets_for_user(user_id));
+        res.json(get_tickets_for_user(username));
     }
 });
 
