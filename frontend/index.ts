@@ -5,7 +5,7 @@ import {Ticket} from "../backend/lib/ticket.js";
 const eventsSection = document.querySelector("#events");
 const ticketsSection = document.querySelector("#tickets");
 
-// A string of `{username}:{password}`, or undefined
+// A string of `["{username}","{password}"]`, or undefined
 let credentials: string | undefined;
 
 /**
@@ -13,14 +13,13 @@ let credentials: string | undefined;
  * the credentials variable. Retries if provided username is empty.
  */
 function login_prompt(): void {
-    // TODO: Disallow colon ":" in username
     let _username: string | undefined;
     while (!_username) {
         _username = prompt('What is your username?')?.trim();
     }
     const username: string = _username;
     const password: string = prompt('What is your password?')?.trim() || '';
-    credentials = `${username}:${password}`;
+    credentials = JSON.stringify([username, password]);
 }
 
 /**

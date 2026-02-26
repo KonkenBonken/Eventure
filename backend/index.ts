@@ -46,7 +46,10 @@ app.get('/ticket_qr_code/:ticket_id', (req, res) => {
         res.status(404).send('Ticket not found');
     } else {
         res.header('Content-Type', 'image/svg+xml').send(
-            create_qr_code(`http://${local_ip_address()}/validate/${ticket_id}`, {ec_level: 'L', type: 'svg'})
+            create_qr_code(`http://${local_ip_address()}/validate/${ticket_id}`, {
+                ec_level: 'L',
+                type: 'svg'
+            })
         );
     }
 });
@@ -63,7 +66,8 @@ declare global {
 // Intercepts every /api/* route and checks authentication
 // In each api route handler after, a User record is present on the Request
 app.use('/api', (req, res, next) => {
-    const [username, password] = req.headers.authorization?.split(':') ?? [];
+    const [username, password] =
+        JSON.parse(req.headers.authorization || '[]') as string[];
 
     if (username === undefined || password === undefined) {
         res.sendStatus(401);
