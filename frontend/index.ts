@@ -5,6 +5,23 @@ import {Ticket} from "../backend/lib/ticket.js";
 const eventsSection = document.querySelector("#events");
 const ticketsSection = document.querySelector("#tickets");
 
+// A string of `{username}:{password}`, or undefined
+let credentials: string | undefined;
+
+/**
+ * Prompts the user to type in username and password and updates
+ * the credentials variable. Retries if provided username is empty.
+ */
+function login_prompt(): void {
+    // TODO: Disallow colon ":" in username
+    let _username: string | undefined;
+    while (!_username) {
+        _username = prompt('What is your username?')?.trim();
+    }
+    const username: string = _username;
+    const password: string = prompt('What is your password?')?.trim() || '';
+    credentials = `${username}:${password}`;
+}
 
 /**
  * Appends username to the url and fetches the resource,
@@ -12,12 +29,17 @@ const ticketsSection = document.querySelector("#tickets");
  * signs up with username and then retries the fetch. Only retries once
  * @param url The base url, excluding `/{username}`
  */
-async function fetch_with_user_id(url: string): Promise<Response> {
-    const response = await fetch(`${url}/${username}`);
-    // If invalid user id, sign up and retry
+async function fetch_with_auth(url: string): Promise<Response> {
+    while (credentials === undefined) {
+        login_prompt();
+    }
+
+    const response = await fetch(url,
+        {headers: {Authorization: credentials}});
+    // If unauthorized, invalidate credentials and retry
     if (response.status === 401) {
-        await fetch(`/api/signup/${username}`);
-        return fetch(`${url}/${username}`);
+        credentials = undefined;
+        return fetch_with_auth(url);
     } else {
         return response;
     }
@@ -39,7 +61,7 @@ function append_event_card(event: Event): void {
     `;
 
     card.querySelector('button')?.addEventListener('click', async () => {
-        const ticket_response = await fetch_with_user_id(`/api/book/${event.event_id}`);
+        const ticket_response = await fetch_with_auth(`/api/book/${event.event_id}`);
         if (ticket_response.status === 409) {
             alert(`Sorry, ${event.title} is sold out`);
         } else {
@@ -66,17 +88,11 @@ function append_ticket_card(ticket_id: TicketId): void {
     ticketsSection?.append(card);
 }
 
-const event_list_response = await fetch('/api/events');
+const event_list_response = await fetch_with_auth('/api/events');
 const event_list: Array<Event> = await event_list_response.json();
 console.log(event_list);
 
-let _username: string | undefined;
-while (!_username) {
-    _username = prompt('What is your username?')?.trim();
-}
-const username: string = _username;
-
-const tickets_list_response = await fetch_with_user_id(`/api/get_tickets`);
+const tickets_list_response = await fetch_with_auth(`/api/get_tickets`);
 const ticket_list: Array<Ticket> = await tickets_list_response.json();
 console.log(ticket_list);
 

@@ -5,7 +5,7 @@ import {imageSync as create_qr_code} from 'qr-image';
 
 import {get_ticket, get_tickets_for_user, make_ticket} from "./lib/ticket.js";
 import {get_all_events, get_event} from "./lib/event.js";
-import {make_user, user_exists} from "./lib/users.js";
+import {authentication, type User} from "./lib/users.js";
 
 const app = express();
 const port = 80;
@@ -51,24 +51,42 @@ app.get('/ticket_qr_code/:ticket_id', (req, res) => {
     }
 });
 
-app.get('/api/signup/:username', (req, res) => {
-    const {username} = req.params;
-    make_user(username);
-    res.sendStatus(200);
+// Appends the user property to the global Request type
+declare global {
+    namespace Express {
+        interface Request {
+            user: User;
+        }
+    }
+}
+
+// Intercepts every /api/* route and checks authentication
+// In each api route handler after, a User record is present on the Request
+app.use('/api', (req, res, next) => {
+    const [username, password] = req.headers.authorization?.split(':') ?? [];
+
+    if (username === undefined || password === undefined) {
+        res.sendStatus(401);
+    } else {
+        const user = authentication(username, password);
+        if (user === false) {
+            res.sendStatus(401);
+        } else {
+            req.user = user;
+            next();
+        }
+    }
 });
 
 app.get('/api/events', (req, res) => res.json(get_all_events()));
 
-app.get('/api/book/:event_id/:username', (req, res) => {
-    const {event_id, username} = req.params;
+app.get('/api/book/:event_id', (req, res) => {
+    const {event_id} = req.params;
     const event = get_event(event_id);
+    const {username} = req.user;
     // If event is not found, respond with status 404 (Not Found)
     if (event === null) {
         res.status(404).send('Event not found');
-    }
-    // If non-existent username, respond with status 401 (Unauthorized)
-    else if (!user_exists(username)) {
-        res.status(401).send('Invalid username')
     } else {
         const ticket = make_ticket(event_id, username);
         if (ticket !== false) {
@@ -81,14 +99,9 @@ app.get('/api/book/:event_id/:username', (req, res) => {
     }
 });
 
-app.get('/api/get_tickets/:username', (req, res) => {
-    const {username} = req.params;
-    // If non-existent username, respond with status 401 (Unauthorized)
-    if (!user_exists(username)) {
-        res.status(401).send('Invalid username')
-    } else {
-        res.json(get_tickets_for_user(username));
-    }
+app.get('/api/get_tickets', (req, res) => {
+    const {username} = req.user;
+    res.json(get_tickets_for_user(username));
 });
 
 app.listen(port, () => console.log('Listening on http://' + local_ip_address()));

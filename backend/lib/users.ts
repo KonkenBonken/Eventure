@@ -2,7 +2,8 @@ import {ph_insert} from './pkd/hashtables.js';
 import {make_table, lookup_id} from "./generate_ids.js";
 
 export interface User {
-    username: string
+    username: string,
+    password: string,
 }
 
 // Table to store users in
@@ -28,11 +29,28 @@ export function user_exists(username: string): boolean {
 }
 
 /**
+ * Authenticates a username and password,
+ * if user is not found, create a new User record,
+ * if password does not match, return false
+ * @param username The provided username
+ * @param password The provided password
+ * @returns the user record if the user exists or is created, else returns false
+ */
+export function authentication(username: string, password: string): User | false {
+    const user = get_user(username);
+    return user === null
+        ? make_user(username, password)
+        : user.password === password
+            ? user
+            : false;
+}
+
+/**
  * Creates a user record and stores it in the users table
  * @returns The created user record
  */
-export function make_user(username: string): User {
-    const new_user = {username};
+export function make_user(username: string, password: string): User {
+    const new_user = {username, password};
     // adding user to users:
     ph_insert(users, username, new_user);
     return new_user;
