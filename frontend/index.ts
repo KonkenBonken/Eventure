@@ -13,6 +13,12 @@ let credentials: string | undefined;
  * the credentials variable. Retries if provided username is empty.
  */
 function login_prompt(): void {
+    const stored_credentials = localStorage.getItem("credentials");
+    if (stored_credentials !== null) {
+        credentials = stored_credentials;
+        return;
+    } else {}
+
     let _username: string | undefined;
     while (!_username) {
         _username = prompt('What is your username?')?.trim();
@@ -20,6 +26,7 @@ function login_prompt(): void {
     const username: string = _username;
     const password: string = prompt('What is your password?')?.trim() || '';
     credentials = JSON.stringify([username, password]);
+    localStorage.setItem('credentials', credentials);
 }
 
 /**
