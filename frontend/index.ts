@@ -29,6 +29,11 @@ function login_prompt(): void {
     localStorage.setItem('credentials', credentials);
 }
 
+document.querySelector('#logout')?.addEventListener('click', () => {
+    localStorage.removeItem('credentials');
+    location.reload();
+});
+
 /**
  * Appends username to the url and fetches the resource,
  * if the server responds with status 401 (Unauthorized),
