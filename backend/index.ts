@@ -4,7 +4,7 @@ import {ip as local_ip_address} from "address";
 import {imageSync as create_qr_code} from 'qr-image';
 
 import {get_ticket, get_tickets_for_user, make_ticket} from "./lib/ticket.js";
-import {get_all_events, get_event} from "./lib/event.js";
+import {get_all_events, get_event, make_event} from "./lib/event.js";
 import {make_user, user_exists} from "./lib/users.js";
 
 const app = express();
@@ -15,6 +15,9 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 const current_directory = import.meta.dirname;
 const frontend_directory = join_path(current_directory, '../frontend');
 const serve_file = (filename: string) => (req: Request, res: Response): void =>
@@ -23,6 +26,24 @@ const serve_file = (filename: string) => (req: Request, res: Response): void =>
 app.get('/', serve_file('index.html'));
 app.get('/index.js', serve_file('index.js'));
 
+// host
+app.get('/host', serve_file('host.html'));
+
+app.post('/host', (req, res) => {
+    const data = req.body;
+    // can now make event - even empty ones !!
+    const new_event = make_event({
+        title: data.title,
+        description: data.description,
+        timestamp: data.timestamp,
+        price: data.price,
+        capacity: data.capacity === "" ? undefined : data.capacity,
+        sold_tickets: 0,
+    });
+    res.redirect('/host');
+});
+
+// user
 app.get('/validate/:ticket_id', (req, res) => {
     const {ticket_id} = req.params;
     const ticket = get_ticket(ticket_id);
