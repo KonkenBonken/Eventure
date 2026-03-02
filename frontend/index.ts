@@ -6,6 +6,8 @@ import {User} from "../backend/lib/users.js";
 const eventsSection = document.querySelector("#events");
 const ticketsSection = document.querySelector("#tickets");
 
+// Check if HTML page has host attribute
+const is_host = document.body.dataset.role === "host";
 
 /**
  * Appends user_id to the url and fetches the resource,
@@ -28,7 +30,7 @@ async function fetch_with_user_id(url: string): Promise<Response> {
  * Creates an event card and appends it to the Events section
  * @param event The event
  */
-function append_event_card(event: Event): void {
+function append_event_card(event: Event, is_host: Boolean): void {
     const card = document.createElement("div");
     card.classList.add("event");
     card.innerHTML = `
@@ -36,7 +38,7 @@ function append_event_card(event: Event): void {
         <h2>${event.title}</h2>
         <p>${event.description}</p>
         <p>${event.price}:-</p>
-        <button>Book</button>
+        ${is_host ? "" : `<button class="book-btn">Book</button>`}
     `;
 
     card.querySelector('button')?.addEventListener('click', async () => {
@@ -96,7 +98,7 @@ const ticket_list: Array<Ticket> = await tickets_list_response.json();
 console.log(ticket_list);
 
 for (const event of event_list) {
-    append_event_card(event);
+    append_event_card(event, is_host);
 }
 
 for (const ticket of ticket_list) {
