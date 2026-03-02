@@ -27,8 +27,10 @@ async function fetch_with_user_id(url: string): Promise<Response> {
 }
 
 /**
- * Creates an event card and appends it to the Events section
+ * Creates an event card and appends it to the Events section. If the
+ * page is viewed by a host the book button is hidden.
  * @param event The event
+ * @param is_host Boolean describing if the page is viewed by a host
  */
 function append_event_card(event: Event, is_host: Boolean): void {
     const card = document.createElement("div");
