@@ -31,7 +31,7 @@ app.get('/host', serve_file('host.html'));
 
 app.post('/host', (req, res) => {
     const data = req.body;
-    // can now make event - even empty ones !!
+    // Make event
     const new_event = make_event({
         title: data.title,
         description: data.description,
