@@ -27,10 +27,10 @@ async function fetch_with_user_id(url: string): Promise<Response> {
 }
 
 /**
- * Creates an event card and appends it to the Events section. If the
- * page is viewed by a host the book button is hidden.
+ * Creates an event card and appends it to the Events section.
+ * When viewed by a host, the card will show host specific information.
  * @param event The event
- * @param is_host Boolean describing if the page is viewed by a host
+ * @param is_host Boolean - if true, page is being viewed by host
  */
 function append_event_card(event: Event, is_host: Boolean): void {
     const card = document.createElement("div");
@@ -40,6 +40,9 @@ function append_event_card(event: Event, is_host: Boolean): void {
         <h2>${event.title}</h2>
         <p>${event.description}</p>
         <p>${event.price}:-</p>
+        ${is_host ? `<p><b>Capacity:</b> ${event.capacity}</p>` : ""}
+        ${is_host ? `<p><b>Number of sold tickets:</b> ${event.sold_tickets}</p>` : ""}
+        ${is_host ? `<p><b>Earned money:</b> ${(event.sold_tickets)*(event.price)}:-</p>` : ""}
         ${is_host ? "" : `<button class="book-btn">Book</button>`}
     `;
 
