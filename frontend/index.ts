@@ -28,6 +28,13 @@ async function fetch_with_auth(url: string): Promise<Response> {
  * @param event The event
  */
 function append_event_card(event: Event): void {
+    // Check if event is sold out
+    function sold_out(event: Event): boolean {
+        return event.capacity !== undefined && (event.capacity - event.sold_tickets) === 0
+               ? true
+               : false;
+    }
+
     const card = document.createElement("div");
     card.classList.add("event");
     const formatted_date = new Date(event.timestamp).toLocaleString("en-GB", {
@@ -53,16 +60,24 @@ function append_event_card(event: Event): void {
             <p><b>Number of sold tickets:</b> ${event.sold_tickets}</p>
             <p><b>Earned money:</b> ${(event.sold_tickets) * (event.price)}:-</p>
         `;
-    } else {
-        // If is not host, show book button
+    } else if (!sold_out(event)){
+        // If is not host and not sold out, show book button
         card.innerHTML += `<button class="book-btn">Book</button>`;
+    } else {
+        // If is not host and is sold out, show book disabled button and "Sold Out" on ticket
+        card.innerHTML += `<p><b>Sold Out</b></p>`
+        card.innerHTML += `<button class="book-btn" disabled>Book</button>`;
     }
 
     card.querySelector('button')?.addEventListener('click', async () => {
         const ticket_response = await fetch_with_auth(`/api/book/${event.event_id}`);
-        if (ticket_response.status === 409) {
+        if (ticket_response.status === 410) {
             alert(`Sorry, ${event.title} is sold out`);
-        } else {
+        } else if(ticket_response.status === 409) {
+            alert(`Sorry, you already have a ticket for ${event.title}`);
+        } else if (ticket_response.status === 403) {
+            alert(`Only users can buy tickets`);
+        } else{
             const ticket_id: TicketId = await ticket_response.text();
             append_ticket_card(ticket_id);
         }

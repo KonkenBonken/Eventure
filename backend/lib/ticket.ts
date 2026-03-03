@@ -26,11 +26,11 @@ export function get_ticket(ticket_id: TicketId): Ticket | null {
  * Checks if user already has a ticket for event
  * @param event_id The id of the event
  * @param user_id The id of the user
- * @returns true if the user has a ticket for the event and false if they dont.
+ * @returns True if the user has a ticket for the event and false if they don't.
  */
 export function Already_has_ticket_check(event_id: EventId, username: string): true | false {
     
-    //checks for the eventId in all the users tickets 
+    // Checks for the EventId in all the users tickets 
     function check_for_ticket(event_id: EventId, username: string): boolean {
         const users_tickets = get_tickets_for_user(username);
 

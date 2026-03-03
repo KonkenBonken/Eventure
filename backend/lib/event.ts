@@ -94,8 +94,8 @@ export function ticket_count(event: Event): Event {
  * Checks if event is sold out
  * @param event the event
  * @precondition The event exsists
- * @returns {Boolean} Returns true if event is sold out and
- *                    false if tickets are still available
+ * @returns True if event is sold out and
+ *          false if tickets are still available
  */
 export function is_sold_out(event: Event): boolean {
     // the event capacity is unlimited - never sold out

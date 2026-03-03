@@ -5,7 +5,7 @@ import {ip as local_ip_address} from "address";
 import {imageSync as create_qr_code} from 'qr-image';
 
 import {get_ticket, get_tickets_for_user, make_ticket} from "./lib/ticket.js";
-import {get_all_events, get_event, make_event} from "./lib/event.js";
+import {get_all_events, get_event, is_sold_out, make_event} from "./lib/event.js";
 import {authentication, get_user, make_user, type User} from "./lib/users.js";
 
 const app = express();
@@ -204,12 +204,17 @@ app.get('/api/book/:event_id', (req, res) => {
         res.status(404).send('Event not found');
     } else {
         const ticket = make_ticket(event_id, username);
-        if (ticket !== false) {
+        if (req.user.is_host) {
+            res.status(403).send('Only users can buy tickets');
+        } else if (ticket !== false) {
             // Tickets are still available
             res.send(ticket.ticket_id);
+        } else if (is_sold_out(event)) {
+            // If event is sold out, respond with status 410 (Gone)
+            res.status(410).send('Sorry, tickets are sold out');
         } else {
-            // If event is sold out, respond with status 409 (Conflict)
-            res.status(409).send('Sorry, tickets are sold out');
+            // If user already bought a ticket, respond with status 409 (Conflict)
+            res.status(409).send('Sorry, you already have a ticket'); 
         }
     }
 });
