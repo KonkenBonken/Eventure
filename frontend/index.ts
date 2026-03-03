@@ -39,11 +39,19 @@ function append_event_card(event: Event): void {
         <h2>${event.title}</h2>
         <p>${event.description}</p>
         <p>${event.price}:-</p>
-        ${is_host ? `<p><b>Capacity:</b> ${event.capacity}</p>` : ""}
-        ${is_host ? `<p><b>Number of sold tickets:</b> ${event.sold_tickets}</p>` : ""}
-        ${is_host ? `<p><b>Earned money:</b> ${(event.sold_tickets)*(event.price)}:-</p>` : ""}
-        ${is_host ? "" : `<button class="book-btn">Book</button>`}
     `;
+
+    if (is_host) {
+        // If is host, show more event data
+        card.innerHTML += `
+            <p><b>Capacity:</b> ${event.capacity}</p>
+            <p><b>Number of sold tickets:</b> ${event.sold_tickets}</p>
+            <p><b>Earned money:</b> ${(event.sold_tickets) * (event.price)}:-</p>
+        `;
+    } else {
+        // If is not host, show book button
+        card.innerHTML += `<button class="book-btn">Book</button>`;
+    }
 
     card.querySelector('button')?.addEventListener('click', async () => {
         const ticket_response = await fetch_with_user_id(`/api/book/${event.event_id}`);
