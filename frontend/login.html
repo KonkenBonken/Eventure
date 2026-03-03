@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Eventure | Log in</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+<h1>Eventure</h1>
+<h2>Log in</h2>
+<form action="/login" method="post">
+  <label for="login-username">Username:</label>
+  <input type="text" id="login-username" name="username" required>
+
+  <label for="login-password">Password:</label>
+  <input type="password" id="login-password" name="password" required>
+
+  <input type="submit" value="Log in">
+</form>
+<h2>Sign up</h2>
+<form action="/signup" method="post">
+  <label for="signup-username">Username:</label>
+  <input type="text" id="signup-username" name="username" required>
+
+  <label for="signup-password">Password:</label>
+  <input type="password" id="signup-password" name="password" required>
+
+  <label for="host">Host:</label>
+  <input type="checkbox" id="host" name="host">
+
+  <input type="submit" value="Sign up">
+</form>
+</body>
+</html>

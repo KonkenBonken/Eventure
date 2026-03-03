@@ -5,10 +5,10 @@ export type Id = string;
 
 export type EventId = Id;
 export type TicketId = Id;
-export type UserId = Id;
 
 function hash_function(k: Id): number {
-    return parseInt(k, 36);
+    // Converts id from base 36 to a number and replaces NaN with 0
+    return parseInt(k, 36) || 0;
 }
 
 // ABSTRACTIONS
