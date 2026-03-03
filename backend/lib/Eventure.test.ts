@@ -15,9 +15,9 @@ describe("Eventure MVPs", () => {
             sold_tickets: 10,
             });
 
-            const user_ex1 = make_user()
+            const user_ex1 = make_user("Alexandria", "LoveMyDogLucas", false)
 
-        expect(make_ticket(event_ex1.event_id, user_ex1.user_id )).toBe(false);
+        expect(make_ticket(event_ex1.event_id, user_ex1.username )).toBe(false);
     });
 
     test("Successfully buy ticket", () => {
@@ -30,16 +30,33 @@ describe("Eventure MVPs", () => {
             sold_tickets: 10,
             });
 
-            const user_ex2 = make_user()
-            const ticket_ex = make_ticket(event_ex2.event_id, user_ex2.user_id)
+            const user_ex2 = make_user("marking", "marketing", false)
+            const ticket_ex = make_ticket(event_ex2.event_id, user_ex2.username)
 
 
-        expect(get_tickets_for_user(user_ex2.user_id)).toStrictEqual([ticket_ex]);
+        expect(get_tickets_for_user(user_ex2.username)).toStrictEqual([ticket_ex]);
     });
 
     test("See all events", () => {
 
         expect(get_all_events().length).toBe(5);
+    
+    });
+
+    test("Attempt to buy two tickets", () => {
+            const event_ex3 = make_event({
+            title: "Beach episode",
+            description: "Maybe summer will come earlier if we plan for it now, join us on a bus trip to the beach!",
+            timestamp: new Date(2026, 4, 20, 11, 30).toJSON(),
+            price: 85,
+            capacity: 30,
+            sold_tickets: 2,
+            });
+
+            const user_ex3 = make_user("CheapandTastyChopSueyy", "Primosmybeloved", false)
+            const ticket_ex = make_ticket(event_ex3.event_id, user_ex3.username)
+
+        expect(make_ticket(event_ex3.event_id, user_ex3.username)).toBe(false);
     
     });
 
