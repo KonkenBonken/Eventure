@@ -180,6 +180,7 @@ app.post('/api/create_event', (req, res) => {
     } else {
         // Make event
         make_event({
+            host_username: req.user.username,
             title,
             description,
             // Convert Date to ISO date string
@@ -192,7 +193,7 @@ app.post('/api/create_event', (req, res) => {
     }
 });
 
-app.get('/api/events', (req, res) => res.json(get_all_events()));
+app.get('/api/events', (req, res) => res.json(get_all_events(req.user)));
 
 app.get('/api/book/:event_id', (req, res) => {
     const {event_id} = req.params;
