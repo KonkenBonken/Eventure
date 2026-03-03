@@ -5,6 +5,9 @@ import {Ticket} from "../backend/lib/ticket.js";
 const eventsSection = document.querySelector("#events");
 const ticketsSection = document.querySelector("#tickets");
 
+// Check if HTML page has host attribute
+const is_host = document.body.dataset.role === "host";
+
 /**
  * Fetches the resource, if the server responds with status 401 (Unauthorized),
  * redirects to login page
@@ -20,19 +23,40 @@ async function fetch_with_auth(url: string): Promise<Response> {
 }
 
 /**
- * Creates an event card and appends it to the Events section
+ * Creates an event card and appends it to the Events section.
+ * When viewed by a host, the card will show host specific information.
  * @param event The event
  */
 function append_event_card(event: Event): void {
     const card = document.createElement("div");
     card.classList.add("event");
+    const formatted_date = new Date(event.timestamp).toLocaleString("en-GB", {
+        weekday: "short",
+        day: "numeric",
+        month: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+    });
+    const capacity = event.capacity ?? 'Unlimited';
+
     card.innerHTML = `
-        <hr>
         <h2>${event.title}</h2>
+        <p>${formatted_date}<b>${event.price}:-</b></p>
         <p>${event.description}</p>
-        <p>${event.price}:-</p>
-        <button>Book</button>
     `;
+
+    if (is_host) {
+        // If is host, show more event data
+        card.innerHTML += `
+            <p><b>Capacity:</b> ${capacity}</p>
+            <p><b>Number of sold tickets:</b> ${event.sold_tickets}</p>
+            <p><b>Earned money:</b> ${(event.sold_tickets) * (event.price)}:-</p>
+        `;
+    } else {
+        // If is not host, show book button
+        card.innerHTML += `<button class="book-btn">Book</button>`;
+    }
 
     card.querySelector('button')?.addEventListener('click', async () => {
         const ticket_response = await fetch_with_auth(`/api/book/${event.event_id}`);

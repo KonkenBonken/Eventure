@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Rampart+One&family=Zain:ital,wght@0,200;0,300;0,400;0,700;0,800;0,900;1,300;1,400&display=swap');
+
+html {
+    overflow: hidden;
+    background: linear-gradient(to top, #c2c5aa, #b6ad90);
+}
+
+body {
+    height: calc(100vh - 100px);
+    overflow: auto;
+    margin: 0;
+    padding-inline: calc(50vw - 450px);
+    padding-top: 100px;
+    font-family: "Zain", sans-serif;
+}
+
+h1 {
+    position: fixed;
+    margin: 0;
+    padding-left: 30px;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background-color: #a68a64;
+    box-shadow: 0 0 35px #0009;
+    color: #331e0e;
+    font-family: "Rampart One", sans-serif;
+    font-size: 60px;
+    line-height: 70px;
+    text-shadow: 2px 1px 3px #ebd9c0cc;
+    z-index: 2;
+}
+
+#tickets {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+#events {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.event, .ticket {
+    background-color: #6f8f7299;
+    border-radius: 8px;
+    border: #6f8f72 solid 3px;
+    padding: 8px 8px 12px;
+    margin-bottom: 20px;
+    box-shadow: 1px 4px 6px #111b1166;
+    color: #333d29;
+}
+
+.event {
+    height: 300px;
+    position: relative;
+
+    h2 {
+        color: #191e14;
+        margin: 0;
+        font-size: 28px;
+    }
+
+    p {
+        margin-block: 0 .5lh;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    button {
+        all: unset;
+        background-color: #93663999;
+        border: #936639 solid 2px;
+        width: 60px;
+        height: 30px;
+        font-size: inherit;
+        font-weight: bold;
+        display: grid;
+        place-items: center;
+        border-radius: 6px;
+        color: #331e0e;
+        cursor: pointer;
+        position: absolute;
+        bottom: 20px;
+        left: calc(50% - 31px)
+    }
+}
+
+
+form {
+    margin-bottom: 100px;
+
+    input, textarea {
+        display: block;
+        background-color: #6f8f7266;
+        border-radius: 3px;
+        border: #6f8f72 solid 1px;
+        padding: 2px 0 2px 4px;
+        box-shadow: 0 1px 2px #111b1166;
+        color: #333d29;
+    }
+
+    input[type="submit"] {
+        all: unset;
+        margin-top: 10px;
+        background-color: #93663966;
+        border: #936639 solid 1px;
+        width: 60px;
+        height: 30px;
+        font-size: inherit;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 3px;
+        color: #331e0e;
+        cursor: pointer;
+    }
+}
+
+:focus-visible {
+    outline: none;
+}

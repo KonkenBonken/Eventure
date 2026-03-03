@@ -5,7 +5,7 @@ import {ip as local_ip_address} from "address";
 import {imageSync as create_qr_code} from 'qr-image';
 
 import {get_ticket, get_tickets_for_user, make_ticket} from "./lib/ticket.js";
-import {get_all_events, get_event} from "./lib/event.js";
+import {get_all_events, get_event, make_event} from "./lib/event.js";
 import {authentication, make_user, type User} from "./lib/users.js";
 
 const app = express();
@@ -27,7 +27,60 @@ const serve_file = (filename: string) => (req: Request, res: Response): void =>
 
 app.get('/', serve_file('index.html'));
 app.get('/index.js', serve_file('index.js'));
+app.get('/index.css', serve_file('index.css'));
 
+// host
+app.get('/host', serve_file('host.html'));
+
+app.post('/host', (req, res) => {
+    const data: Record<string, string> = req.body;
+
+    const title = data.title?.trim();
+    const description = data.description?.trim();
+    const timestamp = new Date(data.timestamp ?? '');
+    const price = parseFloat(data.price ?? '');
+    const capacity = data.capacity === ""
+        ? undefined
+        : parseFloat(data.capacity ?? '');
+
+    if (
+        // Ensures that title or description is non-empty
+        !title
+        || !description
+
+        // Ensures that timestamp is valid and in the future
+        || isNaN(timestamp.getTime())
+        || timestamp <= new Date()
+
+        // Ensures that price is valid and non-negative
+        || !isFinite(price)
+        || price < 0
+
+        // Ensures that capacity is either undefined or valid and non-negative
+        || (capacity !== undefined
+            && (
+                !isFinite(capacity)
+                || capacity < 0
+            ))
+    ) {
+        // Handle when any data is invalid
+        res.status(403).send('Invalid event data');
+    } else {
+        // Make event
+        make_event({
+            title,
+            description,
+            // Convert Date to ISO date string
+            timestamp: timestamp.toJSON(),
+            price,
+            capacity,
+            sold_tickets: 0,
+        });
+        res.redirect('/host');
+    }
+});
+
+// user
 app.get('/validate/:ticket_id', (req, res) => {
     const {ticket_id} = req.params;
     const ticket = get_ticket(ticket_id);
