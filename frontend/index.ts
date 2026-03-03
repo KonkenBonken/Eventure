@@ -30,9 +30,8 @@ async function fetch_with_user_id(url: string): Promise<Response> {
  * Creates an event card and appends it to the Events section.
  * When viewed by a host, the card will show host specific information.
  * @param event The event
- * @param is_host Boolean - if true, page is being viewed by host
  */
-function append_event_card(event: Event, is_host: Boolean): void {
+function append_event_card(event: Event): void {
     const card = document.createElement("div");
     card.classList.add("event");
     card.innerHTML = `
@@ -103,7 +102,7 @@ const ticket_list: Array<Ticket> = await tickets_list_response.json();
 console.log(ticket_list);
 
 for (const event of event_list) {
-    append_event_card(event, is_host);
+    append_event_card(event);
 }
 
 for (const ticket of ticket_list) {
