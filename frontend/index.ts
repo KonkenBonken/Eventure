@@ -5,55 +5,18 @@ import {Ticket} from "../backend/lib/ticket.js";
 const eventsSection = document.querySelector("#events");
 const ticketsSection = document.querySelector("#tickets");
 
-// A string of `["{username}","{password}"]`, or undefined
-let credentials: string | undefined;
-
 /**
- * Prompts the user to type in username and password and updates
- * the credentials variable. Retries if provided username is empty.
- */
-function login_prompt(): void {
-    const stored_credentials = localStorage.getItem("credentials");
-    if (stored_credentials !== null) {
-        credentials = stored_credentials;
-        return;
-    } else {}
-
-    let _username: string | undefined;
-    while (!_username) {
-        _username = prompt('What is your username?')?.trim();
-    }
-    const username: string = _username;
-    const password: string = prompt('What is your password?')?.trim() || '';
-    credentials = JSON.stringify([username, password]);
-    localStorage.setItem('credentials', credentials);
-}
-
-document.querySelector('#logout')?.addEventListener('click', () => {
-    localStorage.removeItem('credentials');
-    location.reload();
-});
-
-/**
- * Appends username to the url and fetches the resource,
- * if the server responds with status 401 (Unauthorized),
- * signs up with username and then retries the fetch. Only retries once
- * @param url The base url, excluding `/{username}`
+ * Fetches the resource, if the server responds with status 401 (Unauthorized),
+ * redirects to login page
+ * @param url The url to fetch
  */
 async function fetch_with_auth(url: string): Promise<Response> {
-    while (credentials === undefined) {
-        login_prompt();
-    }
-
-    const response = await fetch(url,
-        {headers: {Authorization: credentials}});
-    // If unauthorized, invalidate credentials and retry
+    const response = await fetch(url);
+    // If unauthorized, redirect to login page
     if (response.status === 401) {
-        credentials = undefined;
-        return fetch_with_auth(url);
-    } else {
-        return response;
-    }
+        location.href = '/login';
+    } else {}
+    return response;
 }
 
 /**

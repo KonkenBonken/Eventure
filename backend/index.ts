@@ -1,11 +1,12 @@
 import express, {type Request, type Response} from 'express';
+import cookieParser from 'cookie-parser';
 import {join as join_path} from 'path';
 import {ip as local_ip_address} from "address";
 import {imageSync as create_qr_code} from 'qr-image';
 
 import {get_ticket, get_tickets_for_user, make_ticket} from "./lib/ticket.js";
 import {get_all_events, get_event} from "./lib/event.js";
-import {authentication, type User} from "./lib/users.js";
+import {authentication, make_user, type User} from "./lib/users.js";
 
 const app = express();
 const port = 80;
@@ -14,6 +15,10 @@ app.use((req, res, next) => {
     console.log(`${req.method} ${req.originalUrl}`);
     next();
 });
+
+app.use(express.urlencoded({extended: true}));
+app.use(express.json());
+app.use(cookieParser());
 
 const current_directory = import.meta.dirname;
 const frontend_directory = join_path(current_directory, '../frontend');
@@ -54,6 +59,51 @@ app.get('/ticket_qr_code/:ticket_id', (req, res) => {
     }
 });
 
+// login
+app.get('/login', serve_file('login.html'));
+
+app.post('/login', (req, res) => {
+    const data: Record<string, string> = req.body;
+
+    const username = data.username?.trim();
+    const password = data.password;
+
+    if (
+        // Ensures that username and password is non-empty
+        !username || !password
+
+        // Authenticates username and password
+        || !authentication(username, password)
+    ) {
+        res.sendStatus(401);
+    } else {
+        // If successfully logged, set cookies and redirect to main page
+        res.cookie('username', username)
+            .cookie('password', password)
+            .redirect('/');
+    }
+});
+
+app.post('/signup', (req, res) => {
+    const data: Record<string, string> = req.body;
+
+    const username = data.username?.trim();
+    const password = data.password;
+
+    if (
+        // Ensures that username and password is non-empty
+        !username || !password
+    ) {
+        res.sendStatus(403);
+    } else {
+        const user = make_user(username, password);
+        // If successfully signed up, set cookies and redirect to main page
+        res.cookie('username', user.username)
+            .cookie('password', user.password)
+            .redirect('/');
+    }
+});
+
 // Appends the user property to the global Request type
 declare global {
     namespace Express {
@@ -66,14 +116,14 @@ declare global {
 // Intercepts every /api/* route and checks authentication
 // In each api route handler after, a User record is present on the Request
 app.use('/api', (req, res, next) => {
-    const [username, password] =
-        JSON.parse(req.headers.authorization || '[]') as string[];
+    const cookies = req.cookies as Record<string, string>;
+    const {username, password} = cookies;
 
     if (username === undefined || password === undefined) {
         res.sendStatus(401);
     } else {
         const user = authentication(username, password);
-        if (user === false) {
+        if (!user) {
             res.sendStatus(401);
         } else {
             req.user = user;

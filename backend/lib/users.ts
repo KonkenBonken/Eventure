@@ -30,19 +30,16 @@ export function user_exists(username: string): boolean {
 
 /**
  * Authenticates a username and password,
- * if user is not found, create a new User record,
- * if password does not match, return false
+ * if user is not found or password does not match, return false
  * @param username The provided username
  * @param password The provided password
- * @returns the user record if the user exists or is created, else returns false
+ * @returns the user record if the user exists and password matches, else returns false
  */
 export function authentication(username: string, password: string): User | false {
     const user = get_user(username);
-    return user === null
-        ? make_user(username, password)
-        : user.password === password
-            ? user
-            : false;
+    return (user !== null && user.password === password)
+        ? user
+        : false;
 }
 
 /**
