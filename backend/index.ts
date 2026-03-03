@@ -30,17 +30,51 @@ app.get('/index.js', serve_file('index.js'));
 app.get('/host', serve_file('host.html'));
 
 app.post('/host', (req, res) => {
-    const data = req.body;
-    // Make event
-    const new_event = make_event({
-        title: data.title,
-        description: data.description,
-        timestamp: data.timestamp,
-        price: data.price,
-        capacity: data.capacity === "" ? undefined : data.capacity,
-        sold_tickets: 0,
-    });
-    res.redirect('/host');
+    const data: Record<string, string> = req.body;
+
+    const title = data.title?.trim();
+    const description = data.description?.trim();
+    const timestamp = new Date(data.timestamp ?? '');
+    const price = parseFloat(data.price ?? '');
+    const capacity = data.capacity === ""
+        ? undefined
+        : parseFloat(data.capacity ?? '');
+
+    if (
+        // Ensures that title or description is non-empty
+        !title
+        || !description
+
+        // Ensures that timestamp is valid and in the future
+        || isNaN(timestamp.getTime())
+        || timestamp <= new Date()
+
+        // Ensures that price is valid and non-negative
+        || !isFinite(price)
+        || price < 0
+
+        // Ensures that capacity is either undefined or valid and non-negative
+        || (capacity !== undefined
+            && (
+                !isFinite(capacity)
+                || capacity < 0
+            ))
+    ) {
+        // Handle when any data is invalid
+        res.status(403).send('Invalid event data');
+    } else {
+        // Make event
+        make_event({
+            title,
+            description,
+            // Convert Date to ISO date string
+            timestamp: timestamp.toJSON(),
+            price,
+            capacity,
+            sold_tickets: 0,
+        });
+        res.redirect('/host');
+    }
 });
 
 // user
