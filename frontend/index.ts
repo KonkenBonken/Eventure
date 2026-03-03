@@ -42,6 +42,9 @@ function append_event_card(event: Event): void {
         minute: "2-digit",
         hour12: false
     });
+    const capacity = event.capacity ?? 'Unlimited';
+
+
     card.innerHTML = `
         <h2>${event.title}</h2>
         <p>${formatted_date}<b>${event.price}:-</b></p>
@@ -51,7 +54,7 @@ function append_event_card(event: Event): void {
     if (is_host) {
         // If is host, show more event data
         card.innerHTML += `
-            <p><b>Capacity:</b> ${event.capacity}</p>
+            <p><b>Capacity:</b> ${capacity}</p>
             <p><b>Number of sold tickets:</b> ${event.sold_tickets}</p>
             <p><b>Earned money:</b> ${(event.sold_tickets) * (event.price)}:-</p>
         `;

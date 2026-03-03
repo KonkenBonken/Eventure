@@ -66,10 +66,8 @@ h1 {
 
     p {
         margin-block: 0 .5lh;
-    }
-
-    b {
-        float: right;
+        display: flex;
+        justify-content: space-between;
     }
 
     button {
@@ -78,7 +76,7 @@ h1 {
         border: #936639 solid 2px;
         width: 60px;
         height: 30px;
-        font-size: 16px;
+        font-size: inherit;
         font-weight: bold;
         display: grid;
         place-items: center;
@@ -88,6 +86,39 @@ h1 {
         position: absolute;
         bottom: 20px;
         left: calc(50% - 31px)
-
     }
+}
+
+
+form {
+    margin-bottom: 100px;
+
+    input, textarea {
+        display: block;
+        background-color: #6f8f7266;
+        border-radius: 3px;
+        border: #6f8f72 solid 1px;
+        padding: 2px 0 2px 4px;
+        box-shadow: 0 1px 2px #111b1166;
+        color: #333d29;
+    }
+
+    input[type="submit"] {
+        all: unset;
+        margin-top: 10px;
+        background-color: #93663966;
+        border: #936639 solid 1px;
+        width: 60px;
+        height: 30px;
+        font-size: inherit;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 3px;
+        color: #331e0e;
+        cursor: pointer;
+    }
+}
+
+:focus-visible {
+    outline: none;
 }
