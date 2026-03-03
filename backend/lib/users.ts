@@ -52,3 +52,7 @@ export function make_user(username: string, password: string): User {
     ph_insert(users, username, new_user);
     return new_user;
 }
+
+// Create dummy user for testing
+make_user('user', 'pass');
+make_user('user2', 'pass2');
