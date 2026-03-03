@@ -25,6 +25,7 @@ const serve_file = (filename: string) => (req: Request, res: Response): void =>
 
 app.get('/', serve_file('index.html'));
 app.get('/index.js', serve_file('index.js'));
+app.get('/index.css', serve_file('index.css'));
 
 // host
 app.get('/host', serve_file('host.html'));

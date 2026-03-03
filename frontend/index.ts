@@ -34,11 +34,18 @@ async function fetch_with_user_id(url: string): Promise<Response> {
 function append_event_card(event: Event): void {
     const card = document.createElement("div");
     card.classList.add("event");
+    const formatted_date = new Date(event.timestamp).toLocaleString("en-GB", {
+        weekday: "short",
+        day: "numeric",
+        month: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+    });
     card.innerHTML = `
-        <hr>
         <h2>${event.title}</h2>
+        <p>${formatted_date}<b>${event.price}:-</b></p>
         <p>${event.description}</p>
-        <p>${event.price}:-</p>
     `;
 
     if (is_host) {
