@@ -103,6 +103,23 @@ form {
         color: #333d29;
     }
 
+    input[type="checkbox"] {
+        appearance: none;
+        width: 15px;
+        height: 15px;
+        cursor: pointer;
+
+        &:checked::before {
+            content: "✔";
+            color: #333d29;
+            position: relative;
+            bottom: 6px;
+            right: 2px;
+            font-size: 1.3em;
+        }
+    }
+
+
     input[type="submit"] {
         all: unset;
         margin-top: 10px;
