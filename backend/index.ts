@@ -6,7 +6,7 @@ import {imageSync as create_qr_code} from 'qr-image';
 
 import {get_ticket, get_tickets_for_user, make_ticket} from "./lib/ticket.js";
 import {get_all_events, get_event, make_event} from "./lib/event.js";
-import {authentication, make_user, type User} from "./lib/users.js";
+import {authentication, get_user, make_user, type User} from "./lib/users.js";
 
 const app = express();
 const port = 80;
@@ -82,10 +82,12 @@ app.post('/login', (req, res) => {
     ) {
         res.sendStatus(401);
     } else {
+        const redirect_path = get_user(username)?.is_host ? '/host' : '/';
+
         // If successfully logged, set cookies and redirect to main page
         res.cookie('username', username)
             .cookie('password', password)
-            .redirect('/');
+            .redirect(redirect_path);
     }
 });
 
@@ -103,10 +105,11 @@ app.post('/signup', (req, res) => {
         res.sendStatus(403);
     } else {
         const user = make_user(username, password, is_host);
+        const redirect_path = user.is_host ? '/host' : '/';
         // If successfully signed up, set cookies and redirect to main page
         res.cookie('username', user.username)
             .cookie('password', user.password)
-            .redirect('/');
+            .redirect(redirect_path);
     }
 });
 
