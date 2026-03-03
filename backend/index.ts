@@ -89,6 +89,7 @@ app.post('/signup', (req, res) => {
 
     const username = data.username?.trim();
     const password = data.password;
+    const is_host = data.host === 'on';
 
     if (
         // Ensures that username and password is non-empty
@@ -96,7 +97,7 @@ app.post('/signup', (req, res) => {
     ) {
         res.sendStatus(403);
     } else {
-        const user = make_user(username, password);
+        const user = make_user(username, password, is_host);
         // If successfully signed up, set cookies and redirect to main page
         res.cookie('username', user.username)
             .cookie('password', user.password)

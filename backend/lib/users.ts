@@ -4,6 +4,7 @@ import {make_table, lookup_id} from "./generate_ids.js";
 export interface User {
     username: string,
     password: string,
+    is_host: boolean,
 }
 
 // Table to store users in
@@ -46,13 +47,13 @@ export function authentication(username: string, password: string): User | false
  * Creates a user record and stores it in the users table
  * @returns The created user record
  */
-export function make_user(username: string, password: string): User {
-    const new_user = {username, password};
+export function make_user(username: string, password: string, is_host: boolean): User {
+    const new_user = {username, password, is_host};
     // adding user to users:
     ph_insert(users, username, new_user);
     return new_user;
 }
 
 // Create dummy user for testing
-make_user('user', 'pass');
-make_user('user2', 'pass2');
+make_user('user', 'pass', false);
+make_user('host', 'pass2', true);
