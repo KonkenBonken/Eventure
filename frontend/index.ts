@@ -43,6 +43,8 @@ function append_event_card(event: Event): void {
         hour12: false
     });
     const capacity = event.capacity ?? 'Unlimited';
+    const book_button = document.createElement("button");
+    book_button.textContent = "Book";
 
     card.innerHTML = `
         <h2>${event.title}</h2>
@@ -59,11 +61,12 @@ function append_event_card(event: Event): void {
         `;
     } else if (!sold_out(event)) {
         // If is not host and not sold out, show book button
-        card.innerHTML += `<button class="book-btn">Book</button>`;
+        card.append(book_button);
     } else {
         // If is not host and is sold out, show book disabled button and "Sold Out" on ticket
         card.innerHTML += `<p><b>Sold Out</b></p>`
-        card.innerHTML += `<button class="book-btn" disabled>Book</button>`;
+        book_button.disabled = true;
+        card.append(book_button);
     }
 
     card.querySelector('button')?.addEventListener('click', async () => {
