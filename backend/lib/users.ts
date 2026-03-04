@@ -11,8 +11,8 @@ export interface User {
 const users = make_table<User>();
 
 /**
- * Gets the user from an id
- * @param username The id of the user
+ * Gets the user record of a username
+ * @param username The username of the user
  * @returns The user record if found, else returns null
  */
 export function get_user(username: string): User | null {
