@@ -45,13 +45,17 @@ export function authentication(username: string, password: string): User | false
 
 /**
  * Creates a user record and stores it in the users table
- * @returns The created user record
+ * @returns The created user record if successful, else returns false
  */
-export function make_user(username: string, password: string, is_host: boolean): User {
+export function make_user(username: string, password: string, is_host: boolean): User | false {
     const new_user = {username, password, is_host};
-    // adding user to users:
-    ph_insert(users, username, new_user);
-    return new_user;
+    if (user_exists(username)) {
+        return false;
+    } else {
+        // adding user to users:
+        ph_insert(users, username, new_user);
+        return new_user;
+    }
 }
 
 // Create dummy user for testing

@@ -105,11 +105,15 @@ app.post('/signup', (req, res) => {
         res.sendStatus(403);
     } else {
         const user = make_user(username, password, is_host);
-        const redirect_path = user.is_host ? '/host' : '/';
-        // If successfully signed up, set cookies and redirect to main page
-        res.cookie('username', user.username)
-            .cookie('password', user.password)
-            .redirect(redirect_path);
+        if (user === false) {
+            res.status(409).send('User already exists');
+        } else {
+            const redirect_path = user.is_host ? '/host' : '/';
+            // If successfully signed up, set cookies and redirect to main page
+            res.cookie('username', user.username)
+                .cookie('password', user.password)
+                .redirect(redirect_path);
+        }
     }
 });
 
