@@ -106,6 +106,7 @@ function append_ticket_card(ticket: Ticket): void {
 
 const event_list_response = await fetch_with_auth('/api/events');
 const event_list: Array<Event> = await event_list_response.json();
+event_list.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 console.log(event_list);
 
 const tickets_list_response = await fetch_with_auth(`/api/get_tickets`);
