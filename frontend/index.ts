@@ -68,15 +68,11 @@ function append_event_card(event: Event): void {
 
     card.querySelector('button')?.addEventListener('click', async () => {
         const ticket_response = await fetch_with_auth(`/api/book/${event.event_id}`);
-        if (ticket_response.status === 410) {
-            alert(`Sorry, ${event.title} is sold out`);
-        } else if (ticket_response.status === 409) {
-            alert(`Sorry, you already have a ticket for ${event.title}`);
-        } else if (ticket_response.status === 403) {
-            alert(`Only users can buy tickets`);
+        const ticket_or_error = await ticket_response.json();
+        if (!ticket_response.ok) {
+            alert(ticket_or_error);
         } else {
-            const ticket: Ticket = await ticket_response.json();
-            append_ticket_card(ticket);
+            append_ticket_card(ticket_or_error);
         }
     });
 

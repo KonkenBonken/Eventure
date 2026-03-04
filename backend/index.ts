@@ -5,7 +5,7 @@ import {ip as local_ip_address} from "address";
 import {imageSync as create_qr_code} from 'qr-image';
 
 import {get_ticket, get_tickets_for_user, make_ticket} from "./lib/ticket.js";
-import {get_all_events, get_event, is_sold_out, make_event} from "./lib/event.js";
+import {get_all_events, get_event, make_event} from "./lib/event.js";
 import {authentication, get_user, make_user, type User} from "./lib/users.js";
 
 const app = express();
@@ -197,26 +197,9 @@ app.get('/api/events', (req, res) => res.json(get_all_events(req.user)));
 
 app.get('/api/book/:event_id', (req, res) => {
     const {event_id} = req.params;
-    const event = get_event(event_id);
-    const {username} = req.user;
-    // If event is not found, respond with status 404 (Not Found)
-    if (event === null) {
-        res.status(404).send('Event not found');
-    } else {
-        const ticket = make_ticket(event_id, username);
-        if (req.user.is_host) {
-            res.status(403).send('Only users can buy tickets');
-        } else if (ticket !== false) {
-            // Tickets are still available
-            res.json(ticket);
-        } else if (is_sold_out(event)) {
-            // If event is sold out, respond with status 410 (Gone)
-            res.status(410).send('Sorry, tickets are sold out');
-        } else {
-            // If user already bought a ticket, respond with status 409 (Conflict)
-            res.status(409).send('Sorry, you already have a ticket'); 
-        }
-    }
+    const ticket_or_error = make_ticket(event_id, req.user);
+    const status_code = typeof ticket_or_error === 'string' ? 403 : 200;
+    res.status(status_code).json(ticket_or_error);
 });
 
 app.get('/api/get_tickets', (req, res) => {

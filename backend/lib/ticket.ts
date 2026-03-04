@@ -2,6 +2,7 @@ import {ph_insert} from './pkd/hashtables.js';
 import {
     type EventId, generate_new_id, lookup_id, make_table, type TicketId
 } from "./generate_ids.js";
+import {type User} from "./users.js";
 import {get_event, is_sold_out, increment_sold_tickets} from "./event.js";
 
 export interface Ticket {
@@ -37,24 +38,29 @@ export function user_has_ticket(event_id: EventId, username: string): boolean {
 /**
  * Creates a ticket record and stores it in the tickets table
  * @param event_id The id of the event
- * @param username The username of the user
+ * @param user The user record
  * @returns The created ticket record if successfully booked,
- *          if user already has a ticket for the event,
- *          event is not found or is sold out, returns false
+ *          if not, returns a string containing the reason of the error
  */
-export function make_ticket(event_id: EventId, username: string): Ticket | false {
+export function make_ticket(event_id: EventId, user: User): Ticket | string {
+    const {username} = user;
     const event = get_event(event_id);
-    // If event is not found or is sold out, return false
-    if (event === null || is_sold_out(event) || user_has_ticket(event_id, username)) {
-        return false;
-    } else {}
-
-    const ticket_id = generate_new_id(tickets);
-    const new_ticket = {event_id, ticket_id, username};
-    // adding ticket to tickets:
-    increment_sold_tickets(event);
-    ph_insert(tickets, ticket_id, new_ticket);
-    return new_ticket;
+    if (event === null) {
+        return 'Event not found';
+    } else if (user.is_host) {
+        return 'Hosts cannot buy tickets';
+    } else if (is_sold_out(event)) {
+        return `Sorry, ${event.title} is sold out`;
+    } else if (user_has_ticket(event_id, username)) {
+        return `Sorry, you already have a ticket for ${event.title}`;
+    } else {
+        const ticket_id = generate_new_id(tickets);
+        const new_ticket = {event_id, ticket_id, username};
+        // adding ticket to tickets:
+        increment_sold_tickets(event);
+        ph_insert(tickets, ticket_id, new_ticket);
+        return new_ticket;
+    }
 }
 
 
