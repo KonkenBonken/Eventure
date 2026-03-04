@@ -12,6 +12,16 @@ body {
     padding-inline: calc(50vw - 450px);
     padding-top: 100px;
     font-family: "Zain", sans-serif;
+
+    > a {
+        color: inherit;
+        text-decoration: none;
+        background-color: #331e0e66;
+        border-radius: 4px;
+        padding: 2px 8px;
+        border: #331e0e66 solid 2px;
+        float: right;
+    }
 }
 
 h1 {
