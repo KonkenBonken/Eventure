@@ -1,3 +1,4 @@
+import {haschHex} from 'hasch/string';
 import {ph_empty, ph_lookup, type ProbingHashtable} from "./pkd/hashtables.js";
 
 /** An event id consists of a six character long string consisting of characters a-z and 0-9 */
@@ -7,8 +8,8 @@ export type EventId = Id;
 export type TicketId = Id;
 
 function hash_function(k: Id): number {
-    // Converts id from base 36 to a number and replaces NaN with 0
-    return parseInt(k, 36) || 0;
+    // Hashes key and parses hash as integer
+    return parseInt(haschHex(k), 16);
 }
 
 // ABSTRACTIONS

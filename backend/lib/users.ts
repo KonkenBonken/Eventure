@@ -8,7 +8,6 @@ export interface User {
 }
 
 // Table to store users in
-// TODO: Update hash function to handle a larger character set than base 36
 const users = make_table<User>();
 
 /**
