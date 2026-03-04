@@ -208,7 +208,7 @@ app.get('/api/book/:event_id', (req, res) => {
             res.status(403).send('Only users can buy tickets');
         } else if (ticket !== false) {
             // Tickets are still available
-            res.send(ticket.ticket_id);
+            res.json(ticket);
         } else if (is_sold_out(event)) {
             // If event is sold out, respond with status 410 (Gone)
             res.status(410).send('Sorry, tickets are sold out');

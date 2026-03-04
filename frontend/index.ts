@@ -1,6 +1,5 @@
 import type {Event} from "../backend/lib/event.js";
-import {TicketId} from "../backend/lib/generate_ids.js";
-import {Ticket} from "../backend/lib/ticket.js";
+import type {Ticket} from "../backend/lib/ticket.js";
 
 const eventsSection = document.querySelector("#events");
 const ticketsSection = document.querySelector("#tickets");
@@ -76,8 +75,8 @@ function append_event_card(event: Event): void {
         } else if (ticket_response.status === 403) {
             alert(`Only users can buy tickets`);
         } else {
-            const ticket_id: TicketId = await ticket_response.text();
-            append_ticket_card(ticket_id);
+            const ticket: Ticket = await ticket_response.json();
+            append_ticket_card(ticket);
         }
     });
 
@@ -86,14 +85,20 @@ function append_event_card(event: Event): void {
 
 /**
  * Creates a ticket card and appends it to the Tickets section
- * @param ticket_id The ticket id
+ * @param ticket The ticket record
  */
-function append_ticket_card(ticket_id: TicketId): void {
+function append_ticket_card(ticket: Ticket): void {
+    const get_event = (ticket: Ticket) =>
+        event_list.find(event => event.event_id === ticket.event_id);
+
     const card = document.createElement("div");
+    const {ticket_id} = ticket;
+    const event = get_event(ticket);
     card.classList.add("ticket");
     card.innerHTML = `
-        <p>Ticket id: <code>${ticket_id}</code></p>
+        <b>${event?.title ?? 'Unknown'}</b>
         <img src="/ticket_qr_code/${ticket_id}">
+        <p>Ticket id: <code>${ticket_id}</code></p>
     `;
 
     ticketsSection?.append(card);
@@ -112,5 +117,5 @@ for (const event of event_list) {
 }
 
 for (const ticket of ticket_list) {
-    append_ticket_card(ticket.ticket_id);
+    append_ticket_card(ticket);
 }
