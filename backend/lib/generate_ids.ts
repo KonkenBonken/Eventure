@@ -13,11 +13,11 @@ function hash_function(k: Id): number {
 
 // ABSTRACTIONS
 /**
- * Creates an empty table with 100 slots
+ * Creates an empty growing table
  * @returns The created table
  */
 export function make_table<V>(): ProbingHashtable<Id, V> {
-    return ph_empty(100, hash_function);
+    return ph_empty(10, hash_function);
 }
 
 /**

@@ -86,6 +86,9 @@ export function ph_lookup<K, V>(ht: ProbingHashtable<K,V>, key: K): V | undefine
  * @returns true iff the insertion succeeded (the hash table was not full)
  */
 export function ph_insert<K, V>(ht: ProbingHashtable<K,V>, key: K, value: V): boolean {
+    if (ht.entries >= ht.keys.length * 0.5)
+        resize(ht, ht.keys.length * 2);
+
     const start_idx = ht.hash(key);
     let idx = probe(ht.keys, key, start_idx, false /* don't skip null*/);
 
@@ -113,4 +116,19 @@ export function ph_insert<K, V>(ht: ProbingHashtable<K,V>, key: K, value: V): bo
         ht.values[idx] = value;
         return true;
     }
+}
+
+function resize<K, V>(ht: ProbingHashtable<K, V>, size: number): void {
+    const new_table = ph_empty<K, V>(size, ht.hash);
+
+    for (let i = 0; i < ht.keys.length; i++) {
+        const key = ht.keys[i];
+        if (key != undefined) {
+            const value = ht.values[i];
+            ph_insert(new_table, key, value);
+        }
+    }
+
+    ht.keys = new_table.keys;
+    ht.values = new_table.values;
 }
