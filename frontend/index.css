@@ -85,7 +85,13 @@ h1 {
         cursor: pointer;
         position: absolute;
         bottom: 20px;
-        left: calc(50% - 31px)
+        left: calc(50% - 31px);
+
+        &:disabled {
+            cursor: not-allowed;
+            filter: grayscale(0.6);
+            opacity: 0.5;
+        }
     }
 }
 
