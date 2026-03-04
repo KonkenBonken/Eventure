@@ -79,33 +79,23 @@ export function make_event(data: Omit<Event, 'event_id'>): Event {
 /**
  * Increments the number of sold tickets for given event
  * @param event The event
- * @precondition The event exsists and is not sold out
- * @returns Updated Event if ticket to event is sold
+ * @precondition The event exists and is not sold out
  */
-export function ticket_count(event: Event): Event {
-    // add one to sold_tickets when a ticket is booked and update the event in hashtable
-    const sold = event.sold_tickets;
-    const updated = { ...event, sold_tickets: sold + 1};
-    ph_insert(events, event.event_id, updated);
-    return updated;
+export function increment_sold_tickets(event: Event): void {
+    // add one to event.sold_tickets
+    event.sold_tickets++;
 }
 
 /**
  * Checks if event is sold out
  * @param event the event
- * @precondition The event exsists
+ * @precondition The event exists
  * @returns True if event is sold out and
  *          false if tickets are still available
  */
 export function is_sold_out(event: Event): boolean {
-    // the event capacity is unlimited - never sold out
-    if (event.capacity === undefined) {
-        return false;
-    } else if (event.sold_tickets < event.capacity) {
-        return false;
-    } else {
-        return true;
-    }
+    // checks if the event capacity is defined and sold out
+    return event.capacity !== undefined && event.sold_tickets >= event.capacity;
 }
 
 

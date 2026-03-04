@@ -30,9 +30,7 @@ async function fetch_with_auth(url: string): Promise<Response> {
 function append_event_card(event: Event): void {
     // Check if event is sold out
     function sold_out(event: Event): boolean {
-        return event.capacity !== undefined && (event.capacity - event.sold_tickets) === 0
-               ? true
-               : false;
+        return event.capacity !== undefined && (event.capacity - event.sold_tickets) === 0;
     }
 
     const card = document.createElement("div");
@@ -60,7 +58,7 @@ function append_event_card(event: Event): void {
             <p><b>Number of sold tickets:</b> ${event.sold_tickets}</p>
             <p><b>Earned money:</b> ${(event.sold_tickets) * (event.price)}:-</p>
         `;
-    } else if (!sold_out(event)){
+    } else if (!sold_out(event)) {
         // If is not host and not sold out, show book button
         card.innerHTML += `<button class="book-btn">Book</button>`;
     } else {
@@ -73,11 +71,11 @@ function append_event_card(event: Event): void {
         const ticket_response = await fetch_with_auth(`/api/book/${event.event_id}`);
         if (ticket_response.status === 410) {
             alert(`Sorry, ${event.title} is sold out`);
-        } else if(ticket_response.status === 409) {
+        } else if (ticket_response.status === 409) {
             alert(`Sorry, you already have a ticket for ${event.title}`);
         } else if (ticket_response.status === 403) {
             alert(`Only users can buy tickets`);
-        } else{
+        } else {
             const ticket_id: TicketId = await ticket_response.text();
             append_ticket_card(ticket_id);
         }
