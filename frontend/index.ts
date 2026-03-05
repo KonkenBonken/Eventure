@@ -96,6 +96,7 @@ function append_ticket_card(ticket: Ticket): void {
     card.classList.add("ticket");
     card.innerHTML = `
         <b>${event?.title ?? 'Unknown'}</b>
+        <p>${event?.price}:-</p>
         <img src="/ticket_qr_code/${ticket_id}">
         <p>Ticket id: <code>${ticket_id}</code></p>
     `;
