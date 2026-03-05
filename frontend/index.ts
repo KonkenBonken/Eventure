@@ -64,7 +64,7 @@ function append_event_card(event: Event): void {
         card.append(book_button);
     } else {
         // If is not host and is sold out, show book disabled button and "Sold Out" on ticket
-        card.innerHTML += `<p><b>Sold Out</b></p>`
+        card.innerHTML += `<p><b>SOLD OUT</b></p>`
         book_button.disabled = true;
         card.append(book_button);
     }
@@ -77,6 +77,7 @@ function append_event_card(event: Event): void {
         } else {
             append_ticket_card(ticket_or_error);
             book_button.disabled = true;
+            card.innerHTML += `<p><b>>> You're attending this event</b></p>`
         }
     });
 
