@@ -91,6 +91,13 @@ app.post('/login', (req, res) => {
     }
 });
 
+app.get('/logout', (req, res) => {
+    // Remove cookies and redirect to login page
+    res.clearCookie('username')
+        .clearCookie('password')
+        .redirect('/login');
+});
+
 app.post('/signup', (req, res) => {
     const data: Record<string, string> = req.body;
 
