@@ -95,6 +95,7 @@ function append_ticket_card(ticket: Ticket): void {
     const {ticket_id} = ticket;
     const event = get_event(ticket);
     card.classList.add("ticket");
+    card.setAttribute('tabindex', '1');
     card.innerHTML = `
         <b>${event?.title ?? 'Unknown'}</b>
         <p>${event?.price}:-</p>
