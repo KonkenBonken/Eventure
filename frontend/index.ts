@@ -3,9 +3,13 @@ import type {Ticket} from "../backend/lib/ticket.js";
 
 const eventsSection = document.querySelector("#events");
 const ticketsSection = document.querySelector("#tickets");
+const totalSpending = document.querySelector("#total");
 
 // Check if HTML page has host attribute
 const is_host = document.body.dataset.role === "host";
+
+// Counter for total spending
+let total = 0;
 
 /**
  * Fetches the resource, if the server responds with status 401 (Unauthorized),
@@ -83,7 +87,23 @@ function append_event_card(event: Event): void {
 }
 
 /**
+ * Adds together a users total spending on events
+ * @param ticket The current ticket cost that will be added to the total spending
+ * @returns updated a users total spending on events
+ */
+function total_spending(ticket: Ticket): void {
+    const get_event = (ticket: Ticket) =>
+        event_list.find(event => event.event_id === ticket.event_id);
+    const event = get_event(ticket);
+    total += event?.price ?? 0;
+    if (totalSpending) {
+        totalSpending.textContent = `Total spending: ${total} kr`;
+    } else {}
+}
+
+/**
  * Creates a ticket card and appends it to the Tickets section
+ * and adds ticket cost to total spending
  * @param ticket The ticket record
  */
 function append_ticket_card(ticket: Ticket): void {
@@ -102,6 +122,8 @@ function append_ticket_card(ticket: Ticket): void {
     `;
 
     ticketsSection?.append(card);
+
+    total_spending(ticket);
 }
 
 const event_list_response = await fetch_with_auth('/api/events');
