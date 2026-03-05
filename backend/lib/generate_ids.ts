@@ -9,7 +9,7 @@ export type TicketId = Id;
 
 function hash_function(k: Id): number {
     // Hashes key and parses hash as integer
-    return parseInt(haschHex(k), 16);
+    return parseInt(haschHex(k, 6), 16);
 }
 
 // ABSTRACTIONS
