@@ -2,12 +2,12 @@ import {haschHex} from 'hasch/string';
 import {ph_empty, ph_lookup, type ProbingHashtable} from "./pkd/hashtables.js";
 
 /** An event id consists of a six character long string consisting of characters a-z and 0-9 */
-export type Id = string;
+export type EventId = string;
 
-export type EventId = Id;
-export type TicketId = Id;
+/** An event id consists of a six character long string consisting of characters a-z and 0-9 */
+export type TicketId = string;
 
-function hash_function(k: Id): number {
+function hash_function(k: string): number {
     // Hashes key and parses hash as integer
     return parseInt(haschHex(k, 6), 16);
 }
@@ -17,7 +17,7 @@ function hash_function(k: Id): number {
  * Creates an empty growing table
  * @returns The created table
  */
-export function make_table<V>(): ProbingHashtable<Id, V> {
+export function make_table<V>(): ProbingHashtable<string, V> {
     return ph_empty(10, hash_function);
 }
 
@@ -27,7 +27,7 @@ export function make_table<V>(): ProbingHashtable<Id, V> {
  * @param id The key to search for
  * @returns The value at the key if found, else returns null
  */
-export function lookup_id<V>(ht: ProbingHashtable<Id, V>, id: Id): V | null {
+export function lookup_id<V>(ht: ProbingHashtable<string, V>, id: string): V | null {
     const value = ph_lookup(ht, id);
     return value === undefined ? null : value;
 }
@@ -37,7 +37,7 @@ export function lookup_id<V>(ht: ProbingHashtable<Id, V>, id: Id): V | null {
  * @param ht The hash table to search for collisions in
  * @returns The generated id
  */
-export function generate_new_id<V>(ht: ProbingHashtable<Id, V>): Id {
+export function generate_new_id<V>(ht: ProbingHashtable<string, V>): string {
     // We generate a random number between 0 and 36⁶-1 and then return it as a six character long string in base 36
     const id = Math.floor(Math.random() * 36 ** 6)
         .toString(36).padStart(6, '0');
