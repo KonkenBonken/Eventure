@@ -76,6 +76,7 @@ function append_event_card(event: Event): void {
             alert(ticket_or_error);
         } else {
             append_ticket_card(ticket_or_error);
+            book_button.disabled = true;
         }
     });
 
