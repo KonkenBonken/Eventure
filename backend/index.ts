@@ -1,4 +1,4 @@
-import express, {type Request, type Response} from 'express';
+import express, {NextFunction, type Request, type Response} from 'express';
 import cookieParser from 'cookie-parser';
 import {join as join_path} from 'path';
 import {ip as local_ip_address} from "address";
@@ -25,12 +25,29 @@ const frontend_directory = join_path(current_directory, '../frontend');
 const serve_file = (filename: string) => (req: Request, res: Response): void =>
     res.sendFile(join_path(frontend_directory, filename));
 
-app.get('/', serve_file('index.html'));
+const only_users = (req: Request, res: Response, next: NextFunction): void => {
+    console.log("req.cookies.host =", req.cookies.host);
+    if (req.cookies?.host === "false") {
+        next();
+    } else {
+        res.status(403).send(`Access denied: Users Only`);
+    }
+}
+
+app.get('/', only_users, serve_file('index.html'));
 app.get('/index.js', serve_file('index.js'));
 app.get('/index.css', serve_file('index.css'));
 
 // host
-app.get('/host', serve_file('host.html'));
+const only_hosts = (req: Request, res: Response, next: NextFunction): void => {
+    console.log("req.cookies.host =", req.cookies.host);
+    if (req.cookies?.host === "true") {
+        next();
+    } else {
+        res.status(403).send(`Access denied: Hosts Only`);
+    }
+}
+app.get('/host', only_hosts, serve_file('host.html'));
 
 // user
 app.get('/validate/:ticket_id', (req, res) => {
@@ -82,11 +99,13 @@ app.post('/login', (req, res) => {
     ) {
         res.sendStatus(401);
     } else {
-        const redirect_path = get_user(username)?.is_host ? '/host' : '/';
+        const is_host = get_user(username)?.is_host;
+        const redirect_path = is_host ? '/host' : '/';
 
         // If successfully logged, set cookies and redirect to main page
         res.cookie('username', username)
             .cookie('password', password)
+            .cookie('host', is_host)
             .redirect(redirect_path);
     }
 });
@@ -95,6 +114,7 @@ app.get('/logout', (req, res) => {
     // Remove cookies and redirect to login page
     res.clearCookie('username')
         .clearCookie('password')
+        .clearCookie('host')
         .redirect('/login');
 });
 
@@ -119,6 +139,7 @@ app.post('/signup', (req, res) => {
             // If successfully signed up, set cookies and redirect to main page
             res.cookie('username', user.username)
                 .cookie('password', user.password)
+                .cookie('host', user.is_host)
                 .redirect(redirect_path);
         }
     }
