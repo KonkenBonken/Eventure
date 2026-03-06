@@ -3,9 +3,44 @@ import type {Ticket} from "../backend/lib/ticket.js";
 
 const eventsSection = document.querySelector("#events");
 const ticketsSection = document.querySelector("#tickets");
+const financialSummary = document.querySelector("#total");
 
 // Check if HTML page has host attribute
 const is_host = document.body.dataset.role === "host";
+
+// Counter for total calcualtions
+let total_spent = 0;
+let total_earned = 0;
+
+/**
+ * Sums up how much a user has spent in total on event tickets
+ * @param ticket The currently bought ticket's cost that will be added to the total spending
+ * @returns Total of spent money
+ */
+function total_spending(ticket: Ticket): void {
+    const get_event = (ticket: Ticket) =>
+        event_list.find(event => event.event_id === ticket.event_id);
+    const event = get_event(ticket);
+    // Financial summary for user
+    total_spent += event?.price ?? 0;
+    if (financialSummary) {
+        financialSummary.textContent = `Total spending: ${total_spent} kr`;
+    } else {}
+}
+
+/**
+ * Sums up how much a host has earned from their events
+ * @param event The current events earnings to be added to the total
+ * Total of earned money
+ */
+function total_earning(event: Event): void {
+    // Financial summary for host
+    total_earned += (event.sold_tickets) * (event.price);
+    if (financialSummary) {
+        financialSummary.textContent = `Total earned: ${total_earned} kr`;
+    } else {}
+}
+
 
 /**
  * Fetches the resource, if the server responds with status 401 (Unauthorized),
@@ -82,10 +117,17 @@ function append_event_card(event: Event): void {
     });
 
     eventsSection?.append(card);
+
+    // Diplay hosts total earnings
+    if (is_host) {
+        total_earning(event);
+    } else {}
 }
+
 
 /**
  * Creates a ticket card and appends it to the Tickets section
+ * and adds ticket cost to total spending
  * @param ticket The ticket record
  */
 function append_ticket_card(ticket: Ticket): void {
@@ -105,6 +147,9 @@ function append_ticket_card(ticket: Ticket): void {
     `;
 
     ticketsSection?.append(card);
+
+    // Display users total spending on tickets
+    total_spending(ticket);
 }
 
 const event_list_response = await fetch_with_auth('/api/events');
