@@ -4,6 +4,7 @@
     "address": "^2.0.3",
     "cookie-parser": "^1.4.7",
     "express": "^5.2.1",
+    "hasch": "^7.5.0",
     "qr-image": "^3.2.0"
   },
   "devDependencies": {

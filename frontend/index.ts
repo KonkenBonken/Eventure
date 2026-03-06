@@ -1,6 +1,5 @@
 import type {Event} from "../backend/lib/event.js";
-import {TicketId} from "../backend/lib/generate_ids.js";
-import {Ticket} from "../backend/lib/ticket.js";
+import type {Ticket} from "../backend/lib/ticket.js";
 
 const eventsSection = document.querySelector("#events");
 const ticketsSection = document.querySelector("#tickets");
@@ -28,6 +27,11 @@ async function fetch_with_auth(url: string): Promise<Response> {
  * @param event The event
  */
 function append_event_card(event: Event): void {
+    // Check if event is sold out
+    function sold_out(event: Event): boolean {
+        return event.capacity !== undefined && (event.capacity - event.sold_tickets) === 0;
+    }
+
     const card = document.createElement("div");
     card.classList.add("event");
     const formatted_date = new Date(event.timestamp).toLocaleString("en-GB", {
@@ -39,6 +43,8 @@ function append_event_card(event: Event): void {
         hour12: false
     });
     const capacity = event.capacity ?? 'Unlimited';
+    const book_button = document.createElement("button");
+    book_button.textContent = "Book";
 
     card.innerHTML = `
         <h2>${event.title}</h2>
@@ -53,18 +59,25 @@ function append_event_card(event: Event): void {
             <p><b>Number of sold tickets:</b> ${event.sold_tickets}</p>
             <p><b>Earned money:</b> ${(event.sold_tickets) * (event.price)}:-</p>
         `;
+    } else if (!sold_out(event)) {
+        // If is not host and not sold out, show book button
+        card.append(book_button);
     } else {
-        // If is not host, show book button
-        card.innerHTML += `<button class="book-btn">Book</button>`;
+        // If is not host and is sold out, show book disabled button and "Sold Out" on ticket
+        card.innerHTML += `<p><b>SOLD OUT</b></p>`
+        book_button.disabled = true;
+        card.append(book_button);
     }
 
     card.querySelector('button')?.addEventListener('click', async () => {
         const ticket_response = await fetch_with_auth(`/api/book/${event.event_id}`);
-        if (ticket_response.status === 409) {
-            alert(`Sorry, ${event.title} is sold out`);
+        const ticket_or_error = await ticket_response.json();
+        if (!ticket_response.ok) {
+            alert(ticket_or_error);
         } else {
-            const ticket_id: TicketId = await ticket_response.text();
-            append_ticket_card(ticket_id);
+            append_ticket_card(ticket_or_error);
+            book_button.disabled = true;
+            card.innerHTML += `<p><b>>> You're attending this event</b></p>`
         }
     });
 
@@ -73,14 +86,22 @@ function append_event_card(event: Event): void {
 
 /**
  * Creates a ticket card and appends it to the Tickets section
- * @param ticket_id The ticket id
+ * @param ticket The ticket record
  */
-function append_ticket_card(ticket_id: TicketId): void {
+function append_ticket_card(ticket: Ticket): void {
+    const get_event = (ticket: Ticket) =>
+        event_list.find(event => event.event_id === ticket.event_id);
+
     const card = document.createElement("div");
+    const {ticket_id} = ticket;
+    const event = get_event(ticket);
     card.classList.add("ticket");
+    card.setAttribute('tabindex', '1');
     card.innerHTML = `
-        <p>Ticket id: <code>${ticket_id}</code></p>
+        <b>${event?.title ?? 'Unknown'}</b>
+        <p>${event?.price}:-</p>
         <img src="/ticket_qr_code/${ticket_id}">
+        <p>Ticket id: <code>${ticket_id}</code></p>
     `;
 
     ticketsSection?.append(card);
@@ -88,6 +109,7 @@ function append_ticket_card(ticket_id: TicketId): void {
 
 const event_list_response = await fetch_with_auth('/api/events');
 const event_list: Array<Event> = await event_list_response.json();
+event_list.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 console.log(event_list);
 
 const tickets_list_response = await fetch_with_auth(`/api/get_tickets`);
@@ -99,5 +121,5 @@ for (const event of event_list) {
 }
 
 for (const ticket of ticket_list) {
-    append_ticket_card(ticket.ticket_id);
+    append_ticket_card(ticket);
 }

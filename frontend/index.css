@@ -12,6 +12,16 @@ body {
     padding-inline: calc(50vw - 450px);
     padding-top: 100px;
     font-family: "Zain", sans-serif;
+
+    > a {
+        color: inherit;
+        text-decoration: none;
+        background-color: #331e0e66;
+        border-radius: 4px;
+        padding: 2px 8px;
+        border: #331e0e66 solid 2px;
+        float: right;
+    }
 }
 
 h1 {
@@ -85,10 +95,40 @@ h1 {
         cursor: pointer;
         position: absolute;
         bottom: 20px;
-        left: calc(50% - 31px)
+        left: calc(50% - 31px);
+
+        &:disabled {
+            cursor: not-allowed;
+            filter: grayscale(0.6);
+            opacity: 0.5;
+        }
     }
 }
 
+.ticket {
+    text-align: center;
+    backdrop-filter: blur(6px);
+    cursor: pointer;
+
+    &:focus-within {
+        position: sticky;
+        left: 450px;
+        translate: -50% -80%;
+        z-index: 5;
+        animation: open-ticket .8s ease-out forwards;
+    }
+
+    > p {
+        margin: 0;
+    }
+}
+
+@keyframes open-ticket {
+    to {
+        scale: 2;
+        background-color: #90b69477;
+    }
+}
 
 form {
     margin-bottom: 100px;

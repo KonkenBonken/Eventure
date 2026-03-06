@@ -91,6 +91,13 @@ app.post('/login', (req, res) => {
     }
 });
 
+app.get('/logout', (req, res) => {
+    // Remove cookies and redirect to login page
+    res.clearCookie('username')
+        .clearCookie('password')
+        .redirect('/login');
+});
+
 app.post('/signup', (req, res) => {
     const data: Record<string, string> = req.body;
 
@@ -105,11 +112,15 @@ app.post('/signup', (req, res) => {
         res.sendStatus(403);
     } else {
         const user = make_user(username, password, is_host);
-        const redirect_path = user.is_host ? '/host' : '/';
-        // If successfully signed up, set cookies and redirect to main page
-        res.cookie('username', user.username)
-            .cookie('password', user.password)
-            .redirect(redirect_path);
+        if (user === false) {
+            res.status(409).send('User already exists');
+        } else {
+            const redirect_path = user.is_host ? '/host' : '/';
+            // If successfully signed up, set cookies and redirect to main page
+            res.cookie('username', user.username)
+                .cookie('password', user.password)
+                .redirect(redirect_path);
+        }
     }
 });
 
@@ -180,6 +191,7 @@ app.post('/api/create_event', (req, res) => {
     } else {
         // Make event
         make_event({
+            host_username: req.user.username,
             title,
             description,
             // Convert Date to ISO date string
@@ -192,25 +204,13 @@ app.post('/api/create_event', (req, res) => {
     }
 });
 
-app.get('/api/events', (req, res) => res.json(get_all_events()));
+app.get('/api/events', (req, res) => res.json(get_all_events(req.user)));
 
 app.get('/api/book/:event_id', (req, res) => {
     const {event_id} = req.params;
-    const event = get_event(event_id);
-    const {username} = req.user;
-    // If event is not found, respond with status 404 (Not Found)
-    if (event === null) {
-        res.status(404).send('Event not found');
-    } else {
-        const ticket = make_ticket(event_id, username);
-        if (ticket !== false) {
-            // Tickets are still available
-            res.send(ticket.ticket_id);
-        } else {
-            // If event is sold out, respond with status 409 (Conflict)
-            res.status(409).send('Sorry, tickets are sold out');
-        }
-    }
+    const ticket_or_error = make_ticket(event_id, req.user);
+    const status_code = typeof ticket_or_error === 'string' ? 403 : 200;
+    res.status(status_code).json(ticket_or_error);
 });
 
 app.get('/api/get_tickets', (req, res) => {
