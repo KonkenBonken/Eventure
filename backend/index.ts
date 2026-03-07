@@ -1,4 +1,4 @@
-import express, {type Request, type Response} from 'express';
+import express, {NextFunction, type Request, type Response} from 'express';
 import cookieParser from 'cookie-parser';
 import {join as join_path} from 'path';
 import {ip as local_ip_address} from "address";
@@ -25,12 +25,29 @@ const frontend_directory = join_path(current_directory, '../frontend');
 const serve_file = (filename: string) => (req: Request, res: Response): void =>
     res.sendFile(join_path(frontend_directory, filename));
 
-app.get('/', serve_file('index.html'));
+// Disallowes users from visiting host page and hosts from visiting user page
+// by redirecting them to their respective pages
+// Redirects unauthorized users to the login page
+const role_required = (role: boolean) =>
+    (req: Request, res: Response, next: NextFunction): void => {
+        const user = authentication(req.cookies.username, req.cookies.password);
+        if (!user) {
+            res.redirect('/login');   
+        } else if (user && user.is_host === role) {
+            next();
+        } else if (user.is_host === false) {
+            res.redirect('/');
+        } else {
+            res.redirect('/host');
+        }
+}
+
+app.get('/', role_required(false), serve_file('index.html'));
 app.get('/index.js', serve_file('index.js'));
 app.get('/index.css', serve_file('index.css'));
 
 // host
-app.get('/host', serve_file('host.html'));
+app.get('/host', role_required(true), serve_file('host.html'));
 
 // user
 app.get('/validate/:ticket_id', (req, res) => {
@@ -82,7 +99,8 @@ app.post('/login', (req, res) => {
     ) {
         res.sendStatus(401);
     } else {
-        const redirect_path = get_user(username)?.is_host ? '/host' : '/';
+        const is_host = get_user(username)?.is_host;
+        const redirect_path = is_host ? '/host' : '/';
 
         // If successfully logged, set cookies and redirect to main page
         res.cookie('username', username)
