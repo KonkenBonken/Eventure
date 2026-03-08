@@ -1,7 +1,7 @@
 import {ph_insert} from './pkd/hashtables.js';
 import {
     type EventId, generate_new_id, lookup_id, make_table
-} from './generate_ids.js';
+} from './table.js';
 import {type User} from "./users.js";
 
 // A string representing a ISO timestamp

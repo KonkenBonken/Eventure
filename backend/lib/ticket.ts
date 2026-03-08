@@ -1,7 +1,7 @@
 import {ph_insert} from './pkd/hashtables.js';
 import {
     type EventId, generate_new_id, lookup_id, make_table, type TicketId
-} from "./generate_ids.js";
+} from "./table.js";
 import {type User} from "./users.js";
 import {get_event, is_sold_out, increment_sold_tickets} from "./event.js";
 
