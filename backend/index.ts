@@ -127,7 +127,7 @@ app.post('/signup', (req, res) => {
         // Ensures that username and password is non-empty
         !username || !password
     ) {
-        res.sendStatus(403);
+        res.sendStatus(400);
     } else {
         const user = make_user(username, password, is_host);
         if (user === false) {
@@ -172,7 +172,7 @@ app.use('/api', (req, res, next) => {
 
 app.post('/api/create_event', (req, res) => {
     if (!req.user.is_host) {
-        res.status(403).send('Only hosts can create events');
+        res.status(400).send('Only hosts can create events');
     } else {}
     const data: Record<string, string> = req.body;
 
@@ -227,7 +227,7 @@ app.get('/api/events', (req, res) => res.json(get_all_events(req.user)));
 app.get('/api/book/:event_id', (req, res) => {
     const {event_id} = req.params;
     const ticket_or_error = make_ticket(event_id, req.user);
-    const status_code = typeof ticket_or_error === 'string' ? 403 : 200;
+    const status_code = typeof ticket_or_error === 'string' ? 400 : 200;
     res.status(status_code).json(ticket_or_error);
 });
 
