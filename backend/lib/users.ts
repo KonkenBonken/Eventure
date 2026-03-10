@@ -51,12 +51,12 @@ export function make_user(username: string, password: string, is_host: boolean):
     if (user_exists(username)) {
         return false;
     } else {
-        // adding user to users:
+        // Adding user to users
         ph_insert(users, username, new_user);
         return new_user;
     }
 }
 
-// Create dummy user for testing
+// Adding hardcoded examples to the users table
 make_user('user', 'pass', false);
 make_user('host', 'pass2', true);

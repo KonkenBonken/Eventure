@@ -62,7 +62,7 @@ export function get_event(event_id: EventId): Event | null {
 export function make_event(data: Omit<Event, 'event_id'>): Event {
     const event_id = generate_new_id(events);
     const new_event = {...data, event_id};
-    // adding event to events:
+    // Adding the event to events
     ph_insert(events, event_id, new_event);
     return new_event;
 }
@@ -73,7 +73,7 @@ export function make_event(data: Omit<Event, 'event_id'>): Event {
  * @precondition The event exists and is not sold out
  */
 export function increment_sold_tickets(event: Event): void {
-    // add one to event.sold_tickets
+    // Adding one to event.sold_tickets
     event.sold_tickets++;
 }
 
@@ -85,12 +85,12 @@ export function increment_sold_tickets(event: Event): void {
  *          false if tickets are still available
  */
 export function is_sold_out(event: Event): boolean {
-    // checks if the event capacity is defined and sold out
+    // Checks if the event capacity is defined and sold out
     return event.capacity !== undefined && event.sold_tickets >= event.capacity;
 }
 
 
-// add hardcoded examples to the events table
+// Adding hardcoded examples to the events table
 make_event({
     host_username: 'host',
     title: "Hot chocochug",
@@ -103,7 +103,7 @@ make_event({
 
 make_event({
     host_username: 'host',
-    title: "Bee hive building",
+    title: "Beehive building",
     description: "Come build some beehives for spring!",
     timestamp: new Date(2026, 3, 20, 15, 15).toJSON(),
     price: 10,

@@ -56,7 +56,7 @@ export function make_ticket(event_id: EventId, user: User): Ticket | string {
     } else {
         const ticket_id = generate_new_id(tickets);
         const new_ticket = {event_id, ticket_id, username};
-        // adding ticket to tickets:
+        // Adding ticket to tickets
         increment_sold_tickets(event);
         ph_insert(tickets, ticket_id, new_ticket);
         return new_ticket;

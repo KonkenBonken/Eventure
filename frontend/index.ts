@@ -8,7 +8,7 @@ const financialSummary = document.querySelector("#total");
 // Check if HTML page has host attribute
 const is_host = document.body.dataset.role === "host";
 
-// Counter for total calcualtions
+// Counter for total calculations
 let total_spent = 0;
 let total_earned = 0;
 
@@ -31,7 +31,7 @@ function total_spending(ticket: Ticket): void {
 /**
  * Sums up how much a host has earned from their events
  * @param event The current events earnings to be added to the total
- * Total of earned money
+ * @returns Total of earned money
  */
 function total_earning(event: Event): void {
     // Financial summary for host
@@ -118,7 +118,7 @@ function append_event_card(event: Event): void {
 
     eventsSection?.append(card);
 
-    // Diplay hosts total earnings
+    // Display hosts total earnings
     if (is_host) {
         total_earning(event);
     } else {}

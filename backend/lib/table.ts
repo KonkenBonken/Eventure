@@ -12,7 +12,6 @@ function hash_function(k: string): number {
     return parseInt(haschHex(k, 6), 16);
 }
 
-// ABSTRACTIONS
 /**
  * Creates an empty growing table
  * @returns The created table

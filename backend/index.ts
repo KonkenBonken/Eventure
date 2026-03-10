@@ -25,7 +25,7 @@ const frontend_directory = join_path(current_directory, '../frontend');
 const serve_file = (filename: string) => (req: Request, res: Response): void =>
     res.sendFile(join_path(frontend_directory, filename));
 
-// Disallowes users from visiting host page and hosts from visiting user page
+// Disallows users from visiting host page and hosts from visiting user page
 // by redirecting them to their respective pages
 // Redirects unauthorized users to the login page
 const role_required = (role: boolean) =>
