@@ -56,15 +56,6 @@ export function get_event(event_id: EventId): Event | null {
 }
 
 /**
- * Gets the Date object of an Event timestamp
- * @param event The event
- * @returns The Date object
- */
-export function get_date(event: Event): Date {
-    return new Date(event.timestamp);
-}
-
-/**
  * Creates an event record and stores it in the events table
  * @returns The created event record
  */
