@@ -15,7 +15,6 @@ let total_earned = 0;
 /**
  * Sums up how much a user has spent in total on event tickets
  * @param ticket The currently bought ticket's cost that will be added to the total spending
- * @returns Total of spent money
  */
 function total_spending(ticket: Ticket): void {
     const get_event = (ticket: Ticket) =>
@@ -29,9 +28,8 @@ function total_spending(ticket: Ticket): void {
 }
 
 /**
- * Sums up how much a host has earned from their events
+ * Sums up how much a host has earned in total from all their events
  * @param event The current events earnings to be added to the total
- * @returns Total of earned money
  */
 function total_earning(event: Event): void {
     // Financial summary for host
