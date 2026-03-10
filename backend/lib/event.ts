@@ -1,7 +1,7 @@
-import {ph_insert} from './pkd/hashtables.js';
+import {ph_insert} from "./pkd/hashtables.js";
 import {
     type EventId, generate_new_id, lookup_id, make_table
-} from './table.js';
+} from "./table.js";
 import {type User} from "./users.js";
 
 // A string representing a ISO timestamp
@@ -92,7 +92,7 @@ export function is_sold_out(event: Event): boolean {
 
 // Adding hardcoded examples to the events table
 make_event({
-    host_username: 'host',
+    host_username: "host",
     title: "Hot chocochug",
     description: "Drink a liter of hot chocolate challenge, hot chocolate provided",
     timestamp: new Date(2026, 1, 25, 17, 0).toJSON(),
@@ -102,7 +102,7 @@ make_event({
 });
 
 make_event({
-    host_username: 'host',
+    host_username: "host",
     title: "Beehive building",
     description: "Come build some beehives for spring!",
     timestamp: new Date(2026, 3, 20, 15, 15).toJSON(),
@@ -112,7 +112,7 @@ make_event({
 });
 
 make_event({
-    host_username: 'host',
+    host_username: "host",
     title: "Beverage ball",
     description: "Dance around in outfits inspired by your favorite drink!",
     timestamp: new Date(2026, 2, 3, 18, 30).toJSON(),

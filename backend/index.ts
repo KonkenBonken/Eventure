@@ -1,8 +1,8 @@
-import express, {NextFunction, type Request, type Response} from 'express';
-import cookieParser from 'cookie-parser';
-import {join as join_path} from 'path';
+import express, {NextFunction, type Request, type Response} from "express";
+import cookieParser from "cookie-parser";
+import {join as join_path} from "path";
 import {ip as local_ip_address} from "address";
-import {imageSync as create_qr_code} from 'qr-image';
+import {imageSync as create_qr_code} from "qr-image";
 
 import {get_ticket, get_tickets_for_user, make_ticket} from "./lib/ticket.js";
 import {get_all_events, get_event, make_event} from "./lib/event.js";
@@ -180,7 +180,7 @@ app.post('/api/create_event', (req, res) => {
     const description = data.description?.trim();
     const timestamp = new Date(data.timestamp ?? '');
     const price = parseFloat(data.price ?? '');
-    const capacity = data.capacity === ""
+    const capacity = data.capacity === ''
         ? undefined
         : parseFloat(data.capacity ?? '');
 

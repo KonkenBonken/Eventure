@@ -1,4 +1,4 @@
-import {ph_insert} from './pkd/hashtables.js';
+import {ph_insert} from "./pkd/hashtables.js";
 import {
     type EventId, generate_new_id, lookup_id, make_table, type TicketId
 } from "./table.js";

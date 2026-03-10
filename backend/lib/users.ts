@@ -1,4 +1,4 @@
-import {ph_insert} from './pkd/hashtables.js';
+import {ph_insert} from "./pkd/hashtables.js";
 import {make_table, lookup_id} from "./table.js";
 
 export interface User {

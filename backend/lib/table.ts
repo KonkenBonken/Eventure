@@ -1,4 +1,4 @@
-import {haschHex} from 'hasch/string';
+import {haschHex} from "hasch/string";
 import {ph_empty, ph_lookup, type ProbingHashtable} from "./pkd/hashtables.js";
 
 /** An event id consists of a six character long string consisting of characters a-z and 0-9 */

@@ -51,7 +51,7 @@ async function fetch_with_auth(url: string): Promise<Response> {
     const response = await fetch(url);
     // If unauthorized, redirect to login page
     if (response.status === 401) {
-        location.href = '/login';
+        location.href = "/login";
     } else {}
     return response;
 }
@@ -77,7 +77,7 @@ function append_event_card(event: Event): void {
         minute: "2-digit",
         hour12: false
     });
-    const capacity = event.capacity ?? 'Unlimited';
+    const capacity = event.capacity ?? "Unlimited";
     const book_button = document.createElement("button");
     book_button.textContent = "Book";
 
@@ -104,7 +104,7 @@ function append_event_card(event: Event): void {
         card.append(book_button);
     }
 
-    card.querySelector('button')?.addEventListener('click', async () => {
+    card.querySelector('button')?.addEventListener("click", async () => {
         const ticket_response = await fetch_with_auth(`/api/book/${event.event_id}`);
         const ticket_or_error = await ticket_response.json();
         if (!ticket_response.ok) {
@@ -138,9 +138,9 @@ function append_ticket_card(ticket: Ticket): void {
     const {ticket_id} = ticket;
     const event = get_event(ticket);
     card.classList.add("ticket");
-    card.setAttribute('tabindex', '1');
+    card.setAttribute("tabindex", "1");
     card.innerHTML = `
-        <b>${event?.title ?? 'Unknown'}</b>
+        <b>${event?.title ?? "Unknown"}</b>
         <p>${event?.price}:-</p>
         <img src="/ticket_qr_code/${ticket_id}">
         <p>Ticket id: <code>${ticket_id}</code></p>
@@ -152,12 +152,12 @@ function append_ticket_card(ticket: Ticket): void {
     total_spending(ticket);
 }
 
-const event_list_response = await fetch_with_auth('/api/events');
+const event_list_response = await fetch_with_auth("/api/events");
 const event_list: Array<Event> = await event_list_response.json();
 event_list.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 console.log(event_list);
 
-const tickets_list_response = await fetch_with_auth(`/api/get_tickets`);
+const tickets_list_response = await fetch_with_auth("/api/get_tickets");
 const ticket_list: Array<Ticket> = await tickets_list_response.json();
 console.log(ticket_list);
 
